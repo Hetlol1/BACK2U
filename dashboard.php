@@ -1,0 +1,285 @@
+<?php
+include 'config.php';
+
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("Location: admin_dashboard.php");
+    exit();
+}
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.html");
+    exit();
+}
+
+$uid = $_SESSION['user_id'];
+$pRes = mysqli_query($conn, "SELECT profile_photo, name FROM users WHERE id='$uid'");
+$pRow = mysqli_fetch_assoc($pRes);
+$avatarSrc      = (!empty($pRow['profile_photo'])) ? $pRow['profile_photo'] : '';
+$encodedName    = urlencode($pRow['name'] ?? 'User');
+$fallbackAvatar = "https://ui-avatars.com/api/?name={$encodedName}&background=003366&color=fff&size=80";
+?>
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back2U Lost and Found</title>
+<style>
+:root {
+    --bg:#f0f2f5;--surface:#ffffff;--surface2:#f8f9fa;--border:#e0e0e0;
+    --text:#1a1a1a;--text-muted:#666666;--text-faint:#999999;
+    --header-bg:#003366;--header-text:#ffffff;
+    --accent:#003366;--accent-hover:#004080;--shadow:rgba(0,0,0,0.10);
+    --chat-bg:#e5ddd5;--msg-sent:#dcf8c6;--msg-recv:#ffffff;
+    --input-bg:#ffffff;--input-border:#dddddd;
+}
+[data-theme="dark"] {
+    --bg:#0f1117;--surface:#1e2130;--surface2:#262a3a;--border:#2e3348;
+    --text:#e8eaf6;--text-muted:#9fa8c0;--text-faint:#5c6480;
+    --header-bg:#0d1b3e;--header-text:#e8eaf6;
+    --accent:#4a80d4;--accent-hover:#5a90e4;--shadow:rgba(0,0,0,0.40);
+    --chat-bg:#151820;--msg-sent:#1a3a2a;--msg-recv:#1e2130;
+    --input-bg:#262a3a;--input-border:#2e3348;
+}
+*{margin:0;padding:0;box-sizing:border-box;transition:background-color 0.3s,color 0.2s,border-color 0.2s;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px var(--shadow);}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-right{display:flex;align-items:center;gap:15px;}
+.avatar-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--header-text);}
+.avatar-link img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.4);}
+.avatar-link:hover img{border-color:white;}
+.theme-toggle{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:var(--header-text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.theme-toggle:hover{background:rgba(255,255,255,0.25);}
+.main-content{padding:20px;transition:margin-right 0.3s;}
+.main-content.chat-open{margin-right:360px;}
+.chat-panel{position:fixed;right:0;top:70px;width:360px;height:calc(100vh - 70px);background:var(--surface);box-shadow:-3px 0 15px var(--shadow);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s ease;z-index:99;border-left:1px solid var(--border);}
+.chat-panel.open{transform:translateX(0);}
+.chat-panel-header{background:var(--header-bg);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.chat-title{font-weight:bold;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;}
+.chat-close-btn{background:none;border:none;color:white;font-size:1.4rem;cursor:pointer;line-height:1;}
+.chat-panel-body{flex:1;padding:15px;overflow-y:auto;background:var(--chat-bg);}
+.chat-panel-footer{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--surface);}
+.chat-panel-footer input{flex:1;padding:10px;border:1px solid var(--input-border);border-radius:20px;font-size:0.9rem;outline:none;background:var(--input-bg);color:var(--text);}
+.chat-panel-footer input:focus{border-color:var(--accent);}
+.chat-panel-footer button{background:var(--accent);color:white;border:none;border-radius:20px;padding:10px 18px;cursor:pointer;font-size:0.9rem;}
+.chat-panel-footer button:hover{background:var(--accent-hover);}
+.msg{padding:9px 13px;margin:6px 0;border-radius:15px;max-width:78%;word-wrap:break-word;font-size:0.9rem;line-height:1.4;}
+.msg.sent{background:var(--msg-sent);margin-left:auto;border-bottom-right-radius:4px;color:var(--text);}
+.msg.received{background:var(--msg-recv);border-bottom-left-radius:4px;box-shadow:0 1px 2px var(--shadow);color:var(--text);}
+.msg .msg-sender{font-size:0.72rem;font-weight:bold;color:var(--accent);margin-bottom:3px;}
+.msg .msg-time{font-size:0.68rem;color:var(--text-faint);margin-top:3px;text-align:right;}
+.chat-empty{text-align:center;color:var(--text-faint);padding:40px 20px;font-size:0.9rem;}
+.container{max-width:1200px;margin:auto;}
+.upload-btn{background:#28a745;color:white;padding:12px 25px;border-radius:5px;text-decoration:none;display:inline-block;margin-bottom:20px;font-weight:bold;}
+.upload-btn:hover{background:#218838;}
+.tabs{display:flex;margin-bottom:25px;border-bottom:2px solid var(--border);}
+.tab-btn{padding:12px 28px;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--text-muted);font-family:'Segoe UI',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:0.2s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:bold;}
+.tab-btn:hover:not(.active){color:var(--accent);background:var(--surface2);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+.search-filter-section{background:var(--surface);padding:20px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 5px var(--shadow);}
+.search-row{display:flex;gap:15px;flex-wrap:wrap;align-items:center;}
+.search-input,.filter-select{padding:12px;border:1px solid var(--input-border);border-radius:5px;font-size:1rem;background:var(--input-bg);color:var(--text);}
+.search-input{flex:1;min-width:250px;}
+.search-btn{background:#007bff;color:white;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;}
+.search-btn:hover{background:#0056b3;}
+.clear-btn{background:#dc3545;color:white;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
+.card{background:var(--surface);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);transition:transform 0.2s,box-shadow 0.2s;border:1px solid var(--border);}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 16px var(--shadow);}
+.card img{width:100%;height:180px;object-fit:cover;}
+.card-body{padding:15px;}
+.card-title{font-size:1.05rem;font-weight:bold;margin-bottom:6px;color:var(--text);}
+.card-desc{font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;}
+.btn{background:var(--accent);color:white;border:none;padding:9px 18px;cursor:pointer;border-radius:5px;font-size:0.88rem;margin:3px 0;}
+.btn:hover{background:var(--accent-hover);}
+.btn:disabled{background:#ccc;cursor:not-allowed;}
+.btn-danger{background:#dc3545;}
+.btn-danger:hover{background:#c82333;}
+.btn-success{background:#28a745;}
+.btn-success:hover{background:#218838;}
+.btn-warning{background:#fd7e14;color:white;border:none;padding:9px 18px;cursor:pointer;border-radius:5px;font-size:0.88rem;margin:3px 0;}
+.btn-warning:hover{background:#e56a00;}
+.btn-chat{background:var(--accent);}
+.btn-chat.active-chat{background:#28a745;}
+.status-badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;margin-bottom:8px;}
+.status-registered{background:#f3e5f5;color:#6a1b9a;}
+.status-lost{background:#ffebee;color:#c62828;}
+.status-pending{background:#fff8e1;color:#f57f17;}
+.status-claimed{background:#e3f2fd;color:#1565c0;}
+[data-theme="dark"] .status-registered{background:#2a1040;color:#ce93d8;}
+[data-theme="dark"] .status-lost{background:#3b1018;color:#ef9a9a;}
+[data-theme="dark"] .status-pending{background:#3b2e00;color:#ffe082;}
+[data-theme="dark"] .status-claimed{background:#0d2a4a;color:#90caf9;}
+.myitems-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.myitems-header h3{color:var(--accent);font-size:1.3rem;}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-faint);}
+.empty-state .icon{font-size:3rem;margin-bottom:10px;}
+.pagination-wrap{display:flex;justify-content:space-between;align-items:center;margin-top:25px;flex-wrap:wrap;gap:10px;}
+.pagination{display:flex;gap:6px;flex-wrap:wrap;}
+.page-btn{padding:8px 14px;border:1px solid var(--border);background:var(--surface);border-radius:5px;cursor:pointer;font-size:0.9rem;color:var(--accent);transition:0.15s;}
+.page-btn:hover{background:var(--accent);color:white;border-color:var(--accent);}
+.page-btn.active{background:var(--accent);color:white;border-color:var(--accent);font-weight:bold;}
+.page-btn:disabled{background:var(--surface2);color:var(--text-faint);cursor:not-allowed;}
+.page-info{font-size:0.88rem;color:var(--text-muted);}
+.items-per-page{display:flex;align-items:center;gap:8px;font-size:0.88rem;color:var(--text-muted);}
+.items-per-page select{padding:6px 10px;border:1px solid var(--input-border);border-radius:5px;font-size:0.88rem;background:var(--input-bg);color:var(--text);}
+@media(max-width:768px){.chat-panel{width:100%;}.main-content.chat-open{margin-right:0;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="nmims-university-logo.png" alt="NMIMS Logo" style="height:45px;object-fit:contain;filter:brightness(0) invert(1);">
+    <h3>Back2U</h3>
+  </div>
+  <div class="header-right">
+    <span id="welcomeMsg" style="font-size:0.9rem;opacity:0.9;"></span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+    <a href="profile.php" class="avatar-link" title="My Profile">
+      <img src="<?php echo $avatarSrc ? htmlspecialchars($avatarSrc) : $fallbackAvatar; ?>"
+           alt="Profile"
+           onerror="this.onerror=null;this.src='<?php echo $fallbackAvatar; ?>';">
+      <span>Profile</span>
+    </a>
+    <a href="logout.php" style="color:white;text-decoration:none;font-size:0.9rem;">Logout</a>
+  </div>
+</header>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+    <span class="chat-title" id="chatTitle">Chat</span>
+    <button class="chat-close-btn" onclick="closeChat()">&times;</button>
+  </div>
+  <div class="chat-panel-body" id="chatBody">
+    <div class="chat-empty">Select an item to start chatting</div>
+  </div>
+  <div class="chat-panel-footer">
+    <input type="text" id="msgInput" placeholder="Type a message..."
+           onkeydown="if(event.key==='Enter')sendMessage()">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<div class="main-content" id="mainContent">
+  <div class="container">
+    <h2 style="margin-bottom:15px;">Items Database</h2>
+    <a href="upload.php" class="upload-btn">+ Upload Item</a>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('all', this)">🗂 All Lost Items</button>
+      <button class="tab-btn" onclick="switchTab('myitems', this)">📦 My Items</button>
+    </div>
+    <div id="tab-all" class="tab-pane active">
+      <div class="search-filter-section">
+        <div class="search-row">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by title...">
+          <button onclick="applyFilters()" class="search-btn">Search</button>
+          <select id="statusFilter" class="filter-select">
+            <option value="">All Status</option>
+            <option value="lost">Lost</option>
+            <option value="pending">Pending</option>
+            <option value="claimed">Claimed</option>
+          </select>
+          <button onclick="clearFilters()" class="clear-btn">Clear</button>
+        </div>
+      </div>
+      <div class="grid" id="itemGrid"></div>
+      <div class="pagination-wrap">
+        <div class="items-per-page">Show
+          <select id="allPerPage" onchange="allPage=1;displayItems(filteredItems)">
+            <option value="8">8</option><option value="12" selected>12</option>
+            <option value="24">24</option><option value="48">48</option>
+          </select> per page
+        </div>
+        <div class="page-info" id="allPageInfo"></div>
+        <div class="pagination" id="allPagination"></div>
+      </div>
+    </div>
+    <div id="tab-myitems" class="tab-pane">
+      <div class="myitems-header">
+        <h3>📦 My Items</h3>
+        <a href="upload.php" class="upload-btn" style="margin-bottom:0;">+ Upload Item</a>
+      </div>
+      <div class="grid" id="myItemGrid"></div>
+      <div class="pagination-wrap">
+        <div class="items-per-page">Show
+          <select id="myPerPage" onchange="myPage=1;displayMyItems(myItems)">
+            <option value="8">8</option><option value="12" selected>12</option>
+            <option value="24">24</option><option value="48">48</option>
+          </select> per page
+        </div>
+        <div class="page-info" id="myPageInfo"></div>
+        <div class="pagination" id="myPagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const userId   = <?php echo json_encode((int)$_SESSION['user_id']); ?>;
+const userName = <?php echo json_encode($_SESSION['name'] ?? 'User'); ?>;
+document.getElementById('welcomeMsg').innerText = "Welcome, " + userName;
+
+let currentItemId=null,allItems=[],filteredItems=[],myItems=[],allPage=1,myPage=1,pollInterval=null;
+
+/* Theme */
+function toggleTheme(){
+    const html=document.documentElement;
+    const isDark=html.getAttribute('data-theme')==='dark';
+    html.setAttribute('data-theme',isDark?'light':'dark');
+    document.getElementById('themeToggle').textContent=isDark?'🌙':'☀️';
+    localStorage.setItem('theme',isDark?'light':'dark');
+}
+(function(){
+    const saved=localStorage.getItem('theme')||'light';
+    document.documentElement.setAttribute('data-theme',saved);
+    document.getElementById('themeToggle').textContent=saved==='dark'?'☀️':'🌙';
+})();
+
+function escapeHtml(str){return String(str||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function switchTab(tab,btn){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');btn.classList.add('active');}
+
+fetch('get_items.php?view=all').then(r=>r.json()).then(data=>{allItems=filteredItems=data;displayItems(filteredItems);}).catch(()=>{document.getElementById('itemGrid').innerHTML='<div class="empty-state"><div class="icon">⚠️</div><p>Failed to load items.</p></div>';});
+fetch('get_items.php?view=mine').then(r=>r.json()).then(data=>{myItems=data;displayMyItems(myItems);}).catch(()=>{document.getElementById('myItemGrid').innerHTML='<div class="empty-state"><div class="icon">⚠️</div><p>Failed to load your items.</p></div>';});
+
+function getOwnerId(i){return parseInt(i.owner_id??i.user_id??-1);}
+function getFoundBy(i){return parseInt(i.found_by??-1);}
+
+function buildCard(item,showDelete=false){
+    const ownerId=getOwnerId(item),foundBy=getFoundBy(item),status=item.status||'registered';
+    const rawTitle=item.title||'Item',safeTitle=rawTitle.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const imagePath=item.image_path?item.image_path.replace(/^\/+/,''):'';
+    const fallback="https://ui-avatars.com/api/?name="+encodeURIComponent(rawTitle)+"&background=e9ecef&color=003366&size=200";
+    const isActive=currentItemId==item.id;
+    let actionButton='';
+    if(status==='registered'){actionButton=`<button class="btn-warning" onclick="markAsLost(${item.id})">🔴 Mark as Lost</button>`;}
+    else if(status==='claimed'){actionButton=`<button class="btn" disabled>Claimed ✓</button>`;}
+    else if(status==='lost'){if(ownerId===userId){actionButton=`<button class="btn" disabled style="background:#6c757d;cursor:not-allowed;">Your Item</button>`;}else{actionButton=`<button class="btn btn-success" onclick="reportFound(${item.id})">I Found This</button>`;}}
+    else if(status==='pending'){if(ownerId===userId){actionButton=`<button class="btn" style="background:#fd7e14;" onclick="confirmClaim(${item.id})">Confirm Return ✓</button>`;}else if(foundBy===userId){actionButton=`<button class="btn" disabled style="background:#fd7e14;cursor:not-allowed;">Awaiting Confirmation</button>`;}else{actionButton=`<button class="btn" disabled>Pending</button>`;}}
+    const chatBtn=status!=='registered'?`<button class="btn btn-chat ${isActive?'active-chat':''}" id="chatbtn-${item.id}" onclick="openChat(${item.id},'${safeTitle}')">💬 ${isActive?'Chatting...':'Chat'}</button>`:'';
+    return `<div class="card" id="card-${item.id}"><img src="${imagePath?escapeHtml(imagePath):fallback}" onerror="this.onerror=null;this.src='${fallback}'"><div class="card-body"><span class="status-badge status-${status}">${escapeHtml(status.toUpperCase())}</span><div class="card-title">${escapeHtml(rawTitle)}</div><div class="card-desc">${escapeHtml(item.description||'')}</div>${chatBtn}${actionButton}${showDelete?`<button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button>`:''}</div></div>`;
+}
+
+function paginate(items,page,perPage){const total=items.length,pages=Math.max(1,Math.ceil(total/perPage)),safe=Math.min(Math.max(1,page),pages),start=(safe-1)*perPage;return{slice:items.slice(start,start+perPage),page:safe,pages,total,start:start+1,end:Math.min(start+perPage,total)};}
+function renderPagination(pgId,infoId,p,onPageChange){document.getElementById(infoId).textContent=p.total?`Showing ${p.start}–${p.end} of ${p.total} item${p.total!==1?'s':''}`:'';const c=document.getElementById(pgId);if(p.pages<=1){c.innerHTML='';return;}const range=[];for(let i=1;i<=p.pages;i++){if(i===1||i===p.pages||(i>=p.page-2&&i<=p.page+2))range.push(i);else if(range[range.length-1]!=='...')range.push('...');}c.innerHTML=`<button class="page-btn" ${p.page===1?'disabled':''} onclick="(${onPageChange})(${p.page-1})">&#8592;</button>`+range.map(n=>n==='...'?`<button class="page-btn" disabled>…</button>`:`<button class="page-btn ${n===p.page?'active':''}" onclick="(${onPageChange})(${n})">${n}</button>`).join('')+`<button class="page-btn" ${p.page===p.pages?'disabled':''} onclick="(${onPageChange})(${p.page+1})">&#8594;</button>`;}
+
+function displayItems(items){const perPage=parseInt(document.getElementById('allPerPage').value);const p=paginate(items,allPage,perPage);allPage=p.page;const grid=document.getElementById('itemGrid');if(!items.length){grid.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>No lost items found.</p></div>';document.getElementById('allPageInfo').textContent='';document.getElementById('allPagination').innerHTML='';return;}grid.innerHTML=p.slice.map(i=>buildCard(i,false)).join('');renderPagination('allPagination','allPageInfo',p,`function(n){allPage=n;displayItems(filteredItems);document.getElementById('mainContent').scrollTo(0,0);}`);}
+function displayMyItems(items){const perPage=parseInt(document.getElementById('myPerPage').value);const p=paginate(items,myPage,perPage);myPage=p.page;const grid=document.getElementById('myItemGrid');if(!items.length){grid.innerHTML='<div class="empty-state"><div class="icon">📦</div><p>You haven\'t uploaded any items yet.</p></div>';document.getElementById('myPageInfo').textContent='';document.getElementById('myPagination').innerHTML='';return;}grid.innerHTML=p.slice.map(i=>buildCard(i,true)).join('');renderPagination('myPagination','myPageInfo',p,`function(n){myPage=n;displayMyItems(myItems);document.getElementById('mainContent').scrollTo(0,0);}`);}
+
+function applyFilters(){const s=document.getElementById('searchInput').value.toLowerCase();const f=document.getElementById('statusFilter').value;filteredItems=allItems.filter(i=>(!s||(i.title||'').toLowerCase().includes(s))&&(!f||i.status===f));allPage=1;displayItems(filteredItems);}
+function clearFilters(){document.getElementById('searchInput').value='';document.getElementById('statusFilter').value='';filteredItems=allItems;allPage=1;displayItems(filteredItems);}
+
+function openChat(id,title){if(currentItemId===id){closeChat();return;}if(currentItemId){const prev=document.getElementById('chatbtn-'+currentItemId);if(prev){prev.classList.remove('active-chat');prev.innerText='💬 Chat';}}currentItemId=id;document.getElementById('chatTitle').innerText='💬 '+title;document.getElementById('chatBody').innerHTML='<div class="chat-empty">Loading...</div>';const btn=document.getElementById('chatbtn-'+id);if(btn){btn.classList.add('active-chat');btn.innerText='💬 Chatting...';}document.getElementById('chatPanel').classList.add('open');document.getElementById('mainContent').classList.add('chat-open');loadMessages();clearInterval(pollInterval);pollInterval=setInterval(loadMessages,4000);setTimeout(()=>document.getElementById('msgInput').focus(),300);}
+function closeChat(){document.getElementById('chatPanel').classList.remove('open');document.getElementById('mainContent').classList.remove('chat-open');clearInterval(pollInterval);if(currentItemId){const btn=document.getElementById('chatbtn-'+currentItemId);if(btn){btn.classList.remove('active-chat');btn.innerText='💬 Chat';}}currentItemId=null;}
+
+function loadMessages(){if(!currentItemId)return;fetch(`get_messages.php?item_id=${currentItemId}`).then(r=>r.json()).then(msgs=>{const body=document.getElementById('chatBody');if(!msgs.length){body.innerHTML='<div class="chat-empty">No messages yet. Say hello! 👋</div>';return;}const current=body.querySelectorAll('.msg').length;if(current!==msgs.length){body.innerHTML=msgs.map(m=>{const isMine=parseInt(m.sender_id)===userId;const time=m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';return`<div class="msg ${isMine?'sent':'received'}">${!isMine?`<div class="msg-sender">${escapeHtml(m.sender_name||'User')}</div>`:''} ${escapeHtml(m.message)}<div class="msg-time">${time}</div></div>`;}).join('');body.scrollTop=body.scrollHeight;}}).catch(()=>{document.getElementById('chatBody').innerHTML='<div class="chat-empty" style="color:red;">Error loading messages.</div>';});}
+function sendMessage(){const msg=document.getElementById('msgInput').value.trim();if(!msg||!currentItemId)return;document.getElementById('msgInput').value='';const fd=new FormData();fd.append('item_id',currentItemId);fd.append('message',msg);fetch('send_message.php',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.status==='success')loadMessages();}).catch(()=>alert('Error sending message'));}
+
+function markAsLost(id){if(!confirm("Mark this item as LOST? It will become visible to all users."))return;fetch('mark_lost.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);if(d.status==='success'){fetch('get_items.php?view=all').then(r=>r.json()).then(data=>{allItems=filteredItems=data;displayItems(filteredItems);});fetch('get_items.php?view=mine').then(r=>r.json()).then(data=>{myItems=data;displayMyItems(myItems);});}}).catch(err=>alert('Error: '+err));}
+function reportFound(id){if(!confirm("Confirm that you found this item?"))return;fetch('report_found.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.text()).then(raw=>{let d;try{d=JSON.parse(raw);}catch(e){alert("Server error:\n"+raw);return;}alert(d.message||'Done');if(d.status==='success')location.reload();}).catch(err=>alert("Network error: "+err));}
+function confirmClaim(id){if(!confirm("Confirm this person has returned your item?"))return;fetch('claim_item.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);if(d.status==='success')location.reload();});}
+function deleteItem(id){if(!confirm("Delete this item?"))return;fetch('delete_item.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);location.reload();});}
+</script>
+</body>
+</html>

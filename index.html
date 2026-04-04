@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NMIMS Lost & Found</title>
+    <style>
+        :root {
+            --bg:           #f0f2f5;
+            --surface:      #ffffff;
+            --border:       #dddddd;
+            --text:         #1a1a1a;
+            --text-muted:   #666666;
+            --accent:       #003366;
+            --accent-hover: #004080;
+            --input-bg:     #ffffff;
+            --shadow:       rgba(0,0,0,0.10);
+            --toggle-bg:    rgba(0,0,0,0.08);
+            --toggle-border:rgba(0,0,0,0.15);
+        }
+        [data-theme="dark"] {
+            --bg:           #0f1117;
+            --surface:      #1e2130;
+            --border:       #2e3348;
+            --text:         #e8eaf6;
+            --text-muted:   #9fa8c0;
+            --accent:       #4a80d4;
+            --accent-hover: #5a90e4;
+            --input-bg:     #262a3a;
+            --shadow:       rgba(0,0,0,0.40);
+            --toggle-bg:    rgba(255,255,255,0.08);
+            --toggle-border:rgba(255,255,255,0.15);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; transition:background-color 0.3s, color 0.2s, border-color 0.2s; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            color: var(--text);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .theme-toggle:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .container {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            width: 360px;
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text);
+            outline: none;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,128,212,0.15); }
+        input::placeholder { color: var(--text-muted); }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover { background: var(--accent-hover); }
+
+        .login-type-toggle {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+        }
+        .login-type-toggle button {
+            flex: 1;
+            margin: 0;
+            border-radius: 0;
+            border: none;
+            background: var(--surface);
+            color: var(--accent);
+            font-weight: bold;
+            padding: 10px;
+            transition: 0.2s;
+            width: auto;
+        }
+        .login-type-toggle button.active {
+            background: var(--accent);
+            color: white;
+        }
+        .login-type-toggle button:hover:not(.active) {
+            background: var(--input-bg);
+        }
+
+        .admin-badge {
+            display: none;
+            text-align: center;
+            background: var(--input-bg);
+            color: #856404;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        [data-theme="dark"] .admin-badge {
+            color: #ffe082;
+            border-color: #856404;
+        }
+
+        .toggle-link {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 15px;
+        }
+        .toggle-link:hover { color: var(--accent-hover); }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        [data-theme="dark"] .success { background: #1a3a2a; color: #a5d6a7; border-color: #2e7d32; }
+        [data-theme="dark"] .error   { background: #3b1018; color: #ef9a9a; border-color: #c62828; }
+
+        .forgot-link {
+            text-align: right;
+            font-size: 0.82rem;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: -4px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .forgot-link:hover { color: var(--accent-hover); }
+
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .back-link {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .back-link:hover { color: var(--accent); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+<!-- Login Form -->
+<div class="container" id="loginForm">
+    <h2>BACK2U</h2>
+    <div class="login-type-toggle">
+        <button id="btnUser" class="active" onclick="setLoginType('user')">👤 User</button>
+        <button id="btnAdmin" onclick="setLoginType('admin')">🔑 Admin</button>
+    </div>
+    <div id="adminBadge" class="admin-badge">🔒 Admin access only</div>
+    <div id="loginMessage" class="message"></div>
+    <input type="email"    id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPass"  placeholder="Password">
+    <span class="forgot-link" onclick="showForgot()">Forgot password?</span>
+    <button onclick="login()" id="loginBtn">Login</button>
+    <div class="toggle-link" id="registerToggle" onclick="toggleForm()">New here? Register</div>
+</div>
+
+<!-- Registration Form -->
+<div class="container" id="regForm" style="display:none;">
+    <h2>Register</h2>
+    <div id="regMessage" class="message"></div>
+    <input type="text"     id="regName"       placeholder="Full Name">
+    <input type="email"    id="regEmail"       placeholder="Email">
+    <input type="password" id="regPass"        placeholder="Password">
+    <input type="password" id="regPassConfirm" placeholder="Confirm Password">
+    <button onclick="register()">Register</button>
+    <div class="toggle-link" onclick="toggleForm()">Already have an account? Login</div>
+</div>
+
+<!-- Forgot Password Form -->
+<div class="container" id="forgotForm" style="display:none;">
+    <h2>🔑 Reset Password</h2>
+    <div id="forgotMessage" class="message"></div>
+    <div class="step active" id="fpStep1">
+        <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:14px;text-align:center;">Enter your registered email address.</p>
+        <input type="email" id="fpEmail" placeholder="Your email address">
+        <button onclick="checkEmail()">Continue →</button>
+    </div>
+    <div class="step" id="fpStep2">
+        <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:14px;text-align:center;">Email found! Set your new password.</p>
+        <input type="password" id="fpNewPass"     placeholder="New password">
+        <input type="password" id="fpConfirmPass" placeholder="Confirm new password">
+        <button onclick="resetPassword()">Reset Password</button>
+    </div>
+    <div class="back-link" onclick="showLogin()">← Back to Login</div>
+</div>
+
+<script>
+    let currentLoginType = 'user';
+
+    // Auto-open register or login form based on URL hash from landing page
+    (function() {
+        const hash = window.location.hash;
+        if (hash === '#register') {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('regForm').style.display   = 'block';
+        } else if (hash === '#login') {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('regForm').style.display   = 'none';
+        }
+    })();
+
+    function toggleTheme() {
+        const html   = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+    (function () {
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        document.getElementById('themeToggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+    })();
+
+    function setLoginType(type) {
+        currentLoginType = type;
+        document.getElementById('btnUser').classList.toggle('active', type === 'user');
+        document.getElementById('btnAdmin').classList.toggle('active', type === 'admin');
+        document.getElementById('adminBadge').style.display     = type === 'admin' ? 'block' : 'none';
+        document.getElementById('registerToggle').style.display = type === 'admin' ? 'none'  : 'block';
+        document.getElementById('loginMessage').style.display   = 'none';
+        document.getElementById('loginMessage').textContent     = '';
+    }
+
+    function toggleForm() {
+        const loginForm = document.getElementById('loginForm');
+        const regForm   = document.getElementById('regForm');
+        if (loginForm.style.display === 'none') {
+            loginForm.style.display = 'block';
+            regForm.style.display   = 'none';
+        } else {
+            loginForm.style.display = 'none';
+            regForm.style.display   = 'block';
+        }
+        document.getElementById('loginMessage').style.display = 'none';
+        document.getElementById('regMessage').style.display   = 'none';
+        document.getElementById('loginMessage').textContent   = '';
+        document.getElementById('regMessage').textContent     = '';
+    }
+
+    function showMessage(elementId, message, type) {
+        const el = document.getElementById(elementId);
+        el.textContent   = message || 'An error occurred';
+        el.className     = 'message ' + type;
+        el.style.display = 'block';
+    }
+
+    function login() {
+        const email    = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPass').value;
+        if (!email || !password) { showMessage('loginMessage', 'Please fill all fields', 'error'); return; }
+        const formData = new FormData();
+        formData.append('action',   'login');
+        formData.append('email',    email);
+        formData.append('password', password);
+        formData.append('login_as', currentLoginType);
+        fetch('auth.php', { method: 'POST', body: formData })
+            .then(res => res.text())
+            .then(data => {
+                const trimmed = data.trim();
+                if (trimmed.startsWith('redirect:')) {
+                    window.location.href = trimmed.replace('redirect:', '');
+                } else {
+                    showMessage('loginMessage', trimmed || 'Login failed', 'error');
+                }
+            })
+            .catch(() => showMessage('loginMessage', 'Connection error. Check XAMPP.', 'error'));
+    }
+
+    function register() {
+        const name            = document.getElementById('regName').value;
+        const email           = document.getElementById('regEmail').value;
+        const password        = document.getElementById('regPass').value;
+        const passwordConfirm = document.getElementById('regPassConfirm').value;
+        if (!name || !email || !password || !passwordConfirm) { showMessage('regMessage', 'Please fill all fields', 'error'); return; }
+        if (password !== passwordConfirm) { showMessage('regMessage', 'Passwords do not match', 'error'); return; }
+        if (password.length < 6) { showMessage('regMessage', 'Password must be at least 6 characters', 'error'); return; }
+        const formData = new FormData();
+        formData.append('action',   'register');
+        formData.append('name',     name);
+        formData.append('email',    email);
+        formData.append('password', password);
+        fetch('auth.php', { method: 'POST', body: formData })
+            .then(res => res.text())
+            .then(data => {
+                if (data.includes('Successful') || data.includes('success')) {
+                    showMessage('regMessage', 'Registration successful! Please login.', 'success');
+                    setTimeout(() => {
+                        toggleForm();
+                        document.getElementById('regName').value        = '';
+                        document.getElementById('regEmail').value       = '';
+                        document.getElementById('regPass').value        = '';
+                        document.getElementById('regPassConfirm').value = '';
+                    }, 2000);
+                } else {
+                    showMessage('regMessage', data || 'Registration failed', 'error');
+                }
+            })
+            .catch(() => showMessage('regMessage', 'Connection error. Check XAMPP.', 'error'));
+    }
+
+
+    // Auto-open correct form based on ?mode=register or ?mode=login
+    (function() {
+        const mode = new URLSearchParams(window.location.search).get('mode');
+        if (mode === 'register') {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('regForm').style.display   = 'block';
+        }
+    })();
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            if (document.getElementById('loginForm').style.display !== 'none') login();
+            else if (document.getElementById('regForm').style.display !== 'none') register();
+            else if (document.getElementById('forgotForm').style.display !== 'none') {
+                if (document.getElementById('fpStep1').classList.contains('active')) checkEmail();
+                else resetPassword();
+            }
+        }
+    });
+
+    function showForgot() {
+        document.getElementById('loginForm').style.display     = 'none';
+        document.getElementById('regForm').style.display       = 'none';
+        document.getElementById('forgotForm').style.display    = 'block';
+        document.getElementById('forgotMessage').style.display = 'none';
+        document.getElementById('forgotMessage').textContent   = '';
+        document.getElementById('fpEmail').value       = '';
+        document.getElementById('fpNewPass').value     = '';
+        document.getElementById('fpConfirmPass').value = '';
+        document.getElementById('fpStep1').classList.add('active');
+        document.getElementById('fpStep2').classList.remove('active');
+    }
+
+    function showLogin() {
+        document.getElementById('forgotForm').style.display   = 'none';
+        document.getElementById('regForm').style.display      = 'none';
+        document.getElementById('loginForm').style.display    = 'block';
+        document.getElementById('loginMessage').style.display = 'none';
+    }
+
+    function checkEmail() {
+        const email = document.getElementById('fpEmail').value.trim();
+        if (!email) { showMessage('forgotMessage', 'Please enter your email', 'error'); return; }
+        const fd = new FormData();
+        fd.append('action', 'check_email');
+        fd.append('email', email);
+        fetch('forgot_password.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'found') {
+                    showMessage('forgotMessage', '✅ Email found!', 'success');
+                    document.getElementById('fpStep1').classList.remove('active');
+                    document.getElementById('fpStep2').classList.add('active');
+                } else {
+                    showMessage('forgotMessage', '❌ No account found with that email.', 'error');
+                }
+            })
+            .catch(() => showMessage('forgotMessage', 'Connection error.', 'error'));
+    }
+
+    function resetPassword() {
+        const email   = document.getElementById('fpEmail').value.trim();
+        const pass    = document.getElementById('fpNewPass').value;
+        const confirm = document.getElementById('fpConfirmPass').value;
+        if (!pass || !confirm) { showMessage('forgotMessage', 'Please fill both fields', 'error'); return; }
+        if (pass !== confirm)  { showMessage('forgotMessage', 'Passwords do not match', 'error'); return; }
+        if (pass.length < 6)   { showMessage('forgotMessage', 'Password must be at least 6 characters', 'error'); return; }
+        const fd = new FormData();
+        fd.append('action',   'reset_password');
+        fd.append('email',    email);
+        fd.append('password', pass);
+        fetch('forgot_password.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    showMessage('forgotMessage', '✅ Password reset! Redirecting to login...', 'success');
+                    setTimeout(() => showLogin(), 2000);
+                } else {
+                    showMessage('forgotMessage', d.message || 'Reset failed.', 'error');
+                }
+            })
+            .catch(() => showMessage('forgotMessage', 'Connection error.', 'error'));
+    }
+</script>
+
+</body>
+</html>

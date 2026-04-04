@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back2U — College Lost & Found</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --navy:       #003366;
+    --navy-dark:  #001f3f;
+    --navy-light: #0a4a8f;
+    --gold:       #e8a020;
+    --gold-light: #f5c84a;
+    --bg:         #f7f6f2;
+    --surface:    #ffffff;
+    --text:       #111827;
+    --text-2:     #4b5563;
+    --text-3:     #9ca3af;
+    --border:     #e5e7eb;
+    --shadow:     rgba(0,0,0,0.08);
+    --shadow-lg:  rgba(0,0,0,0.16);
+}
+[data-theme="dark"] {
+    --bg:         #0a0e1a;
+    --surface:    #111827;
+    --text:       #f1f5f9;
+    --text-2:     #94a3b8;
+    --text-3:     #475569;
+    --border:     #1e293b;
+    --shadow:     rgba(0,0,0,0.4);
+    --shadow-lg:  rgba(0,0,0,0.6);
+    --navy:       #1a4fa3;
+    --navy-dark:  #0f3070;
+    --navy-light: #2563eb;
+    --gold:       #f59e0b;
+    --gold-light: #fbbf24;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s,color 0.2s;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;transition:background 0.3s,box-shadow 0.3s;background:transparent;}
+nav.scrolled{background:var(--surface);box-shadow:0 1px 20px var(--shadow);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--gold);text-decoration:none;letter-spacing:-0.5px;}
+.nav-logo span{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.nav-link{color:var(--text);text-decoration:none;font-size:0.9rem;font-weight:500;opacity:0.8;}
+.nav-link:hover{opacity:1;}
+.nav-cta{background:var(--navy);color:white;padding:9px 22px;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:500;transition:background 0.2s;}
+.nav-cta:hover{background:var(--navy-light);}
+.theme-btn{background:none;border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:0.2s;}
+.theme-btn:hover{background:var(--border);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;padding:100px 5% 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);opacity:0.06;}
+[data-theme="dark"] .hero-bg{opacity:0.3;}
+.hero-shapes{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.hero-shapes .circle1{position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid var(--navy);opacity:0.06;right:-100px;top:-100px;}
+.hero-shapes .circle2{position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid var(--gold);opacity:0.08;right:150px;top:80px;}
+.hero-shapes .circle3{position:absolute;width:200px;height:200px;border-radius:50%;background:var(--gold);opacity:0.04;left:-60px;bottom:100px;}
+.hero-inner{position:relative;z-index:1;max-width:1200px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(232,160,32,0.12);color:var(--gold);border:1px solid rgba(232,160,32,0.3);padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:500;letter-spacing:0.5px;margin-bottom:24px;}
+.hero-tag .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.2rem);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:22px;}
+h1 em{font-style:normal;color:var(--gold);}
+.hero-sub{font-size:1.1rem;color:var(--text-2);line-height:1.7;margin-bottom:36px;max-width:480px;font-weight:300;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{background:var(--navy);color:white;padding:14px 32px;border-radius:7px;text-decoration:none;font-weight:500;font-size:1rem;transition:0.2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);}
+.btn-outline{border:1.5px solid var(--border);color:var(--text);padding:14px 32px;border-radius:7px;text-decoration:none;font-weight:500;font-size:1rem;transition:0.2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy);}
+.hero-stats{display:flex;gap:32px;margin-top:48px;}
+.stat{text-align:left;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--navy);line-height:1;}
+[data-theme="dark"] .stat-num{color:var(--gold-light);}
+.stat-label{font-size:0.78rem;color:var(--text-3);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* ── HERO VISUAL ── */
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;}
+.mockup-card{background:var(--surface);border-radius:16px;box-shadow:0 20px 60px var(--shadow-lg);padding:24px;width:100%;max-width:380px;border:1px solid var(--border);animation:floatUp 0.8s ease both;}
+.mockup-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.mockup-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:white;font-size:0.8rem;font-weight:700;}
+.mockup-title{font-weight:600;font-size:0.9rem;}
+.mockup-sub{font-size:0.75rem;color:var(--text-3);}
+.mockup-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;background:var(--bg);margin-bottom:10px;transition:0.2s;}
+.mockup-item:hover{background:var(--border);}
+.item-img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.item-img.blue{background:#dbeafe;}
+.item-img.green{background:#dcfce7;}
+.item-img.amber{background:#fef3c7;}
+.item-info{flex:1;}
+.item-name{font-size:0.88rem;font-weight:600;color:var(--text);}
+.item-loc{font-size:0.75rem;color:var(--text-3);margin-top:2px;}
+.item-badge{font-size:0.68rem;font-weight:700;padding:3px 8px;border-radius:10px;}
+.badge-lost{background:#fee2e2;color:#b91c1c;}
+.badge-found{background:#dcfce7;color:#15803d;}
+.badge-pending{background:#fef3c7;color:#b45309;}
+[data-theme="dark"] .badge-lost{background:#3b1018;color:#ef9a9a;}
+[data-theme="dark"] .badge-found{background:#1a3a2a;color:#a5d6a7;}
+[data-theme="dark"] .badge-pending{background:#3b2e00;color:#ffe082;}
+.mockup-ai{background:linear-gradient(135deg,rgba(0,51,102,0.08),rgba(232,160,32,0.08));border:1px dashed var(--border);border-radius:10px;padding:12px;margin-top:6px;display:flex;align-items:center;gap:10px;}
+[data-theme="dark"] .mockup-ai{background:linear-gradient(135deg,rgba(26,79,163,0.15),rgba(245,158,11,0.1));}
+.ai-icon{font-size:1.2rem;}
+.ai-text{font-size:0.78rem;color:var(--text-2);line-height:1.4;}
+.ai-text strong{color:var(--navy);font-weight:600;}
+[data-theme="dark"] .ai-text strong{color:var(--gold-light);}
+
+/* floating badge */
+.float-badge{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;box-shadow:0 8px 24px var(--shadow);display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:500;white-space:nowrap;animation:float 3s ease-in-out infinite;}
+.float-badge.pos1{top:-20px;right:-20px;animation-delay:0s;}
+.float-badge.pos2{bottom:10px;left:-30px;animation-delay:1.5s;}
+.float-dot{width:8px;height:8px;border-radius:50%;}
+.dot-green{background:#22c55e;}
+.dot-blue{background:#3b82f6;}
+
+/* ── SECTION BASE ── */
+section{padding:90px 5%;}
+.section-inner{max-width:1200px;margin:auto;}
+.section-tag{font-size:0.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.15;letter-spacing:-0.5px;margin-bottom:16px;}
+.section-title em{font-style:normal;color:var(--navy);}
+[data-theme="dark"] .section-title em{color:var(--gold-light);}
+.section-sub{font-size:1rem;color:var(--text-2);line-height:1.7;max-width:520px;font-weight:300;}
+.centered{text-align:center;}
+.centered .section-sub{margin:0 auto;}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;margin-top:56px;}
+.how-card{position:relative;padding:32px 28px;border-radius:14px;border:1px solid var(--border);background:var(--surface);transition:0.3s;}
+.how-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px var(--shadow);}
+.how-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--navy);opacity:0.07;position:absolute;top:16px;right:20px;line-height:1;}
+[data-theme="dark"] .how-num{color:var(--gold);opacity:0.12;}
+.how-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:18px;}
+.icon-navy{background:rgba(0,51,102,0.1);}
+.icon-gold{background:rgba(232,160,32,0.12);}
+.icon-green{background:rgba(34,197,94,0.1);}
+.icon-blue{background:rgba(59,130,246,0.1);}
+[data-theme="dark"] .icon-navy{background:rgba(26,79,163,0.2);}
+[data-theme="dark"] .icon-gold{background:rgba(245,158,11,0.15);}
+[data-theme="dark"] .icon-green{background:rgba(34,197,94,0.15);}
+[data-theme="dark"] .icon-blue{background:rgba(59,130,246,0.15);}
+.how-card h3{font-size:1.05rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.how-card p{font-size:0.88rem;color:var(--text-2);line-height:1.65;font-weight:300;}
+
+/* ── FEATURES ── */
+.features-section{background:var(--surface);}
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:56px;}
+.feature-list{display:flex;flex-direction:column;gap:24px;}
+.feature-item{display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:12px;transition:0.2s;cursor:default;}
+.feature-item:hover{background:var(--bg);}
+.feature-icon{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.feature-item h4{font-size:0.95rem;font-weight:600;margin-bottom:5px;}
+.feature-item p{font-size:0.85rem;color:var(--text-2);line-height:1.6;font-weight:300;}
+.feature-visual{background:var(--bg);border-radius:20px;padding:28px;border:1px solid var(--border);}
+.fv-title{font-size:0.78rem;font-weight:700;color:var(--text-3);letter-spacing:1px;text-transform:uppercase;margin-bottom:18px;}
+.match-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border-radius:10px;margin-bottom:10px;border:1px solid var(--border);}
+.match-thumb{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.match-info{flex:1;}
+.match-name{font-size:0.85rem;font-weight:600;}
+.match-conf{font-size:0.75rem;color:var(--text-3);}
+.conf-bar{height:4px;border-radius:2px;margin-top:5px;background:var(--border);}
+.conf-fill{height:100%;border-radius:2px;}
+.conf-high{background:#22c55e;width:92%;}
+.conf-med{background:#f59e0b;width:67%;}
+.conf-low{background:#ef4444;width:31%;}
+.conf-badge{font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:6px;}
+.high{background:#dcfce7;color:#15803d;}
+.med{background:#fef3c7;color:#b45309;}
+.low{background:#fee2e2;color:#b91c1c;}
+[data-theme="dark"] .high{background:#1a3a2a;color:#a5d6a7;}
+[data-theme="dark"] .med{background:#3b2e00;color:#ffe082;}
+[data-theme="dark"] .low{background:#3b1018;color:#ef9a9a;}
+
+/* ── COLLEGES ── */
+.colleges-section{background:var(--bg);}
+.domain-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px;justify-content:center;}
+.domain-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:0.85rem;font-weight:500;color:var(--text-2);display:flex;align-items:center;gap:8px;transition:0.2s;}
+.domain-chip:hover{border-color:var(--navy);color:var(--navy);}
+[data-theme="dark"] .domain-chip:hover{border-color:var(--gold);color:var(--gold);}
+.domain-chip .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;}
+
+/* ── CTA SECTION ── */
+.cta-section{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:white;text-align:center;padding:100px 5%;}
+[data-theme="dark"] .cta-section{background:linear-gradient(135deg,#0d1b3e,#1a3a7a);}
+.cta-section .section-title{color:white;}
+.cta-section .section-sub{color:rgba(255,255,255,0.7);margin:0 auto 40px;}
+.cta-section .btn-primary{background:var(--gold);color:#1a1a1a;}
+.cta-section .btn-primary:hover{background:var(--gold-light);}
+.cta-section .btn-outline{border-color:rgba(255,255,255,0.3);color:white;}
+.cta-section .btn-outline:hover{border-color:white;background:rgba(255,255,255,0.08);}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+/* ── FOOTER ── */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:40px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--gold);}
+.footer-logo span{color:var(--text-2);}
+.footer-text{font-size:0.82rem;color:var(--text-3);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:0.82rem;color:var(--text-3);text-decoration:none;}
+.footer-links a:hover{color:var(--navy);}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.3);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes floatUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+    .hero-inner{grid-template-columns:1fr;gap:40px;}
+    .hero-visual{display:none;}
+    .features-grid{grid-template-columns:1fr;}
+    .hero-stats{gap:20px;}
+}
+@media(max-width:600px){
+    nav .nav-link{display:none;}
+    .hero-btns{flex-direction:column;}
+    .cta-btns{flex-direction:column;align-items:center;}
+    footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a class="nav-logo" href="#">Back<span>2U</span></a>
+    <div class="nav-right">
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#colleges" class="nav-link">Colleges</a>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+        <a href="index.html?mode=register" class="nav-cta">Get Started</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-shapes">
+        <div class="circle1"></div>
+        <div class="circle2"></div>
+        <div class="circle3"></div>
+    </div>
+    <div class="hero-inner">
+        <div class="hero-content">
+            <div class="hero-tag"><span class="dot"></span>AI-Powered Lost & Found</div>
+            <h1>Lost something?<br>We'll get it <em>Back2U.</em></h1>
+            <p class="hero-sub">The smart lost & found platform built for Indian colleges. Register items, get AI-matched with finders, and reunite with your belongings — fast.</p>
+            <div class="hero-btns">
+                <a href="index.html?mode=register" class="btn-primary">🎓 Sign up with College Email</a>
+                <a href="#how" class="btn-outline">See how it works →</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><div class="stat-num">AI</div><div class="stat-label">Image Matching</div></div>
+                <div class="stat"><div class="stat-num">Real</div><div class="stat-label">-time Chat</div></div>
+                <div class="stat"><div class="stat-num">Multi</div><div class="stat-label">-College Support</div></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="float-badge pos1"><span class="float-dot dot-green"></span>Item found nearby!</div>
+            <div class="float-badge pos2"><span class="float-dot dot-blue"></span>92% AI match confidence</div>
+            <div class="mockup-card">
+                <div class="mockup-header">
+                    <div class="mockup-avatar">B2U</div>
+                    <div>
+                        <div class="mockup-title">Lost Items Feed</div>
+                        <div class="mockup-sub">NMIMS Mumbai · 3 new items</div>
+                    </div>
+                </div>
+                <div class="mockup-item">
+                    <div class="item-img blue">🎒</div>
+                    <div class="item-info">
+                        <div class="item-name">Blue Backpack</div>
+                        <div class="item-loc">📍 Library, 3rd floor</div>
+                    </div>
+                    <span class="item-badge badge-lost">LOST</span>
+                </div>
+                <div class="mockup-item">
+                    <div class="item-img green">📱</div>
+                    <div class="item-info">
+                        <div class="item-name">iPhone 14 Pro</div>
+                        <div class="item-loc">📍 Canteen area</div>
+                    </div>
+                    <span class="item-badge badge-pending">PENDING</span>
+                </div>
+                <div class="mockup-item">
+                    <div class="item-img amber">🔑</div>
+                    <div class="item-info">
+                        <div class="item-name">Honda Car Keys</div>
+                        <div class="item-loc">📍 Parking lot B</div>
+                    </div>
+                    <span class="item-badge badge-found">CLAIMED</span>
+                </div>
+                <div class="mockup-ai">
+                    <span class="ai-icon">✨</span>
+                    <div class="ai-text"><strong>AI found a match!</strong> Your backpack matches 3 found reports. Click to see results.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+    <div class="section-inner">
+        <div class="centered reveal">
+            <div class="section-tag">The process</div>
+            <h2 class="section-title">Simple. Fast. <em>Reunited.</em></h2>
+            <p class="section-sub">Four steps to get your item back — powered by AI image matching and real-time communication.</p>
+        </div>
+        <div class="how-grid">
+            <div class="how-card reveal">
+                <div class="how-num">1</div>
+                <div class="how-icon icon-navy">📝</div>
+                <h3>Register Your Item</h3>
+                <p>Upload a photo and description of your item. It stays private until you're ready to report it lost.</p>
+            </div>
+            <div class="how-card reveal">
+                <div class="how-num">2</div>
+                <div class="how-icon icon-gold">🔴</div>
+                <h3>Mark as Lost</h3>
+                <p>When something goes missing, mark it lost. It appears in the public feed for your college community.</p>
+            </div>
+            <div class="how-card reveal">
+                <div class="how-num">3</div>
+                <div class="how-icon icon-green">✨</div>
+                <h3>AI Matches Items</h3>
+                <p>Our Gemini AI compares found item photos with lost items and ranks matches by confidence score.</p>
+            </div>
+            <div class="how-card reveal">
+                <div class="how-num">4</div>
+                <div class="how-icon icon-blue">🤝</div>
+                <h3>Chat & Confirm</h3>
+                <p>Chat with the finder directly in the app. Confirm the return and the item is marked as claimed.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+    <div class="section-inner">
+        <div class="features-grid">
+            <div class="reveal">
+                <div class="section-tag">Why Back2U</div>
+                <h2 class="section-title">Built for how<br><em>campuses work.</em></h2>
+                <div class="feature-list" style="margin-top:32px;">
+                    <div class="feature-item">
+                        <div class="feature-icon icon-navy">🔒</div>
+                        <div>
+                            <h4>College Email Only</h4>
+                            <p>Only verified students and faculty with institutional emails can access your college's feed. No outsiders.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon icon-gold">🤖</div>
+                        <div>
+                            <h4>Gemini AI Matching</h4>
+                            <p>Google's Gemini AI visually compares item photos and returns confidence-scored matches instantly.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon icon-green">💬</div>
+                        <div>
+                            <h4>Built-in Chat</h4>
+                            <p>Real-time messaging between item owners and finders — no need for WhatsApp or external apps.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon icon-blue">🎛</div>
+                        <div>
+                            <h4>Admin Dashboard</h4>
+                            <p>College admins get a full control panel — manage items, users, and resolve disputes effortlessly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reveal">
+                <div class="feature-visual">
+                    <div class="fv-title">✨ AI Match Results</div>
+                    <div class="match-row">
+                        <div class="match-thumb" style="background:#dbeafe;">🎒</div>
+                        <div class="match-info">
+                            <div class="match-name">Blue Wildcraft Backpack</div>
+                            <div class="match-conf">Found at Library · Reported by Rahul S.</div>
+                            <div class="conf-bar"><div class="conf-fill conf-high"></div></div>
+                        </div>
+                        <span class="conf-badge high">92%</span>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-thumb" style="background:#e0e7ff;">👜</div>
+                        <div class="match-info">
+                            <div class="match-name">Dark Blue Laptop Bag</div>
+                            <div class="match-conf">Found near Canteen · Reported by Priya M.</div>
+                            <div class="conf-bar"><div class="conf-fill conf-med"></div></div>
+                        </div>
+                        <span class="conf-badge med">67%</span>
+                    </div>
+                    <div class="match-row">
+                        <div class="match-thumb" style="background:#fce7f3;">🎽</div>
+                        <div class="match-info">
+                            <div class="match-name">Sports Kit Bag</div>
+                            <div class="match-conf">Found at Sports Complex · Reported by Amit K.</div>
+                            <div class="conf-bar"><div class="conf-fill conf-low"></div></div>
+                        </div>
+                        <span class="conf-badge low">31%</span>
+                    </div>
+                    <div style="margin-top:16px;padding:12px 14px;background:var(--bg);border-radius:10px;font-size:0.8rem;color:var(--text-2);text-align:center;">
+                        Powered by <strong style="color:var(--navy);">Google Gemini AI</strong> · Updated in real-time
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COLLEGES -->
+<section id="colleges" class="colleges-section">
+    <div class="section-inner">
+        <div class="centered reveal">
+            <div class="section-tag">Open to all</div>
+            <h2 class="section-title">Works with any <em>Indian college</em> domain.</h2>
+            <p class="section-sub">Any student with an official institutional email — <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:0.9em;">*.ac.in</code>, <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:0.9em;">*.edu.in</code>, or <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:0.9em;">*.edu</code> — can sign up instantly.</p>
+        </div>
+        <div class="domain-grid reveal">
+            <div class="domain-chip"><span class="dot"></span>@nmims.edu</div>
+            <div class="domain-chip"><span class="dot"></span>@nmims.in</div>
+            <div class="domain-chip"><span class="dot"></span>@iitb.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@iitd.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@bits-pilani.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@vit.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@manipal.edu</div>
+            <div class="domain-chip"><span class="dot"></span>@christ.edu</div>
+            <div class="domain-chip"><span class="dot"></span>@du.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@mu.ac.in</div>
+            <div class="domain-chip"><span class="dot"></span>@pu.ac.in</div>
+            <div class="domain-chip" style="border-style:dashed;cursor:pointer;" onclick="alert('Your college can be added by the admin!')">+ Your College</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="section-inner centered">
+        <div class="section-tag" style="color:rgba(255,255,255,0.5);justify-content:center;display:flex;">Ready to find your stuff?</div>
+        <h2 class="section-title" style="color:white;">Lost something today?<br>Sign up in 30 seconds.</h2>
+        <p class="section-sub">Use your college email to get started. No apps to download, no complicated setup — just sign in and start searching.</p>
+        <div class="cta-btns">
+            <a href="index.html?mode=register" class="btn-primary">🎓 Sign up with College Email</a>
+            <a href="index.html?mode=login" class="btn-outline">Already have an account? Login</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo">Back<span>2U</span></div>
+    <div class="footer-text">Built for NMIMS · Powered by Gemini AI</div>
+    <div class="footer-links">
+        <a href="index.html">Login</a>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+    </div>
+</footer>
+
+<script>
+/* Theme */
+function toggleTheme(){
+    const html=document.documentElement;
+    const isDark=html.getAttribute('data-theme')==='dark';
+    html.setAttribute('data-theme',isDark?'light':'dark');
+    document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';
+    localStorage.setItem('theme',isDark?'light':'dark');
+}
+(function(){
+    const s=localStorage.getItem('theme')||'light';
+    document.documentElement.setAttribute('data-theme',s);
+    document.getElementById('themeBtn').textContent=s==='dark'?'☀️':'🌙';
+})();
+
+/* Navbar scroll effect */
+window.addEventListener('scroll',()=>{
+    document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40);
+});
+
+/* Scroll reveal */
+const observer=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
