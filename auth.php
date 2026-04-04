@@ -15,12 +15,10 @@ function isAllowedDomain($email, $conn) {
     if (count($parts) !== 2) return false;
     $domain = strtolower(trim($parts[1]));
 
-    // Auto-allow any official Indian/international academic pattern
     if (preg_match('/\.(ac\.in|edu\.in|edu|res\.in)$/', $domain)) {
         return true;
     }
 
-    // Check custom approved domains in DB
     $stmt = mysqli_prepare($conn,
         "SELECT id FROM allowed_domains WHERE domain = ? AND approved = 1");
     mysqli_stmt_bind_param($stmt, 's', $domain);
@@ -29,6 +27,11 @@ function isAllowedDomain($email, $conn) {
     $found = mysqli_stmt_num_rows($stmt) > 0;
     mysqli_stmt_close($stmt);
     return $found;
+}
+
+function extractDomain($email) {
+    $parts = explode('@', $email);
+    return strtolower(trim($parts[1] ?? ''));
 }
 
 // ── 1. REGISTRATION ────────────────────────────────────────
@@ -41,13 +44,12 @@ if ($action === 'register') {
         send_response("Please fill all fields");
     }
 
-    // Domain check
     if (!isAllowedDomain($email, $conn)) {
         send_response("Only college email addresses are allowed to register (e.g. @nmims.edu, @iitb.ac.in)");
     }
 
     $hashed = password_hash($pass, PASSWORD_DEFAULT);
-    $role   = 'user'; // admins cannot self-register
+    $role   = 'user';
 
     $check = mysqli_prepare($conn, "SELECT id FROM users WHERE email = ?");
     mysqli_stmt_bind_param($check, 's', $email);
@@ -77,7 +79,7 @@ if ($action === 'login') {
     $login_as = trim($_POST['login_as'] ?? 'user');
 
     $stmt = mysqli_prepare($conn,
-        "SELECT id, name, password, role FROM users WHERE email = ?");
+        "SELECT id, name, email, password, role FROM users WHERE email = ?");
     mysqli_stmt_bind_param($stmt, 's', $email);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -95,6 +97,8 @@ if ($action === 'login') {
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['name']    = $row['name'];
             $_SESSION['role']    = $row['role'];
+            $_SESSION['email']   = $row['email'];
+            $_SESSION['domain']  = extractDomain($row['email']);
 
             if ($row['role'] === 'admin') {
                 send_response("redirect:admin_dashboard.php");
