@@ -31,6 +31,9 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mode = $_POST['mode'] ?? '';
 
+    // Absolute base path — works on both Mac and Windows
+    $basePath = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . trim(dirname($_SERVER['PHP_SELF']), '/') . '/';
+
     // ── Mode A: Register an Item ──
     if ($mode === 'register') {
         $title       = trim($_POST['title'] ?? '');
@@ -40,28 +43,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Please fill in all fields.';
         } elseif (empty($_FILES['image']['name'])) {
             $error = 'Please upload an image.';
+        } elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            $error = 'Upload error code: ' . $_FILES['image']['error'];
         } else {
-            $uploadDir = 'uploads/items/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $uploadDir = $basePath . 'uploads/items/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
             $ext     = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
             $allowed = ['jpg','jpeg','png','gif','webp'];
             if (!in_array($ext, $allowed)) {
                 $error = 'Invalid image format.';
             } else {
                 $filename   = 'item_' . $uid . '_' . time() . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                $absPath    = $uploadDir . $filename;
+                $relPath    = 'uploads/items/' . $filename;
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $absPath)) {
                     $stmt = mysqli_prepare($conn,
                         "INSERT INTO items (owner_id, title, description, image_path, status, college_domain)
                          VALUES (?, ?, ?, ?, 'registered', ?)");
-                    mysqli_stmt_bind_param($stmt, 'issss', $uid, $title, $description, $targetPath, $domain);
+                    mysqli_stmt_bind_param($stmt, 'issss', $uid, $title, $description, $relPath, $domain);
                     if (mysqli_stmt_execute($stmt)) {
                         $success = 'Item registered successfully! You can mark it as lost from your My Items page.';
                     } else {
                         $error = 'Database error: ' . mysqli_error($conn);
                     }
                 } else {
-                    $error = 'Failed to upload image.';
+                    $error = 'Failed to move uploaded file. Check folder permissions: ' . $uploadDir;
                 }
             }
         }
@@ -75,20 +83,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Please enter a description of what you found.';
         } elseif (empty($_FILES['found_image']['name'])) {
             $error = 'Please upload an image of the found item.';
+        } elseif ($_FILES['found_image']['error'] !== UPLOAD_ERR_OK) {
+            $error = 'Upload error code: ' . $_FILES['found_image']['error'];
         } else {
-            $uploadDir = 'uploads/found/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $uploadDir = $basePath . 'uploads/found/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
             $ext     = strtolower(pathinfo($_FILES['found_image']['name'], PATHINFO_EXTENSION));
             $allowed = ['jpg','jpeg','png','gif','webp'];
             if (!in_array($ext, $allowed)) {
                 $error = 'Invalid image format.';
             } else {
                 $filename   = 'found_' . $uid . '_' . time() . '.' . $ext;
-                $targetPath = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES['found_image']['tmp_name'], $targetPath)) {
+                $absPath    = $uploadDir . $filename;
+                $relPath    = 'uploads/found/' . $filename;
+                if (move_uploaded_file($_FILES['found_image']['tmp_name'], $absPath)) {
                     $stmt = mysqli_prepare($conn,
                         "INSERT INTO found_reports (finder_id, image_path, description) VALUES (?, ?, ?)");
-                    mysqli_stmt_bind_param($stmt, 'iss', $uid, $targetPath, $description);
+                    mysqli_stmt_bind_param($stmt, 'iss', $uid, $relPath, $description);
                     if (mysqli_stmt_execute($stmt)) {
                         $reportId = mysqli_insert_id($conn);
                         header("Location: found_matches.php?report_id=" . $reportId);
@@ -97,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Database error: ' . mysqli_error($conn);
                     }
                 } else {
-                    $error = 'Failed to upload image.';
+                    $error = 'Failed to move uploaded file. Check folder permissions: ' . $uploadDir;
                 }
             }
         }

@@ -10,7 +10,7 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-define('GEMINI_API_KEY', 'AIzaSyBor5dI_EDgdfk9fNm6m83dtYZgPhEY16o');  // ← paste new key here
+define('GEMINI_API_KEY', 'AIzaSyBz-vof6bWGoTgSCjaoAlk_oLhXs9nTWeo');  // ← paste new key here
 
 session_start();
 ?>
