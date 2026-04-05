@@ -2,12 +2,10 @@
 include 'config.php';
 
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-    header("Location: admin_dashboard.php");
-    exit();
+    header("Location: admin_dashboard.php"); exit();
 }
 if (!isset($_SESSION['user_id'])) {
-    header("Location: index.html");
-    exit();
+    header("Location: index.html"); exit();
 }
 
 $uid = $_SESSION['user_id'];
@@ -24,22 +22,8 @@ $fallbackAvatar = "https://ui-avatars.com/api/?name={$encodedName}&background=00
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Back2U Lost and Found</title>
 <style>
-:root {
-    --bg:#f0f2f5;--surface:#ffffff;--surface2:#f8f9fa;--border:#e0e0e0;
-    --text:#1a1a1a;--text-muted:#666666;--text-faint:#999999;
-    --header-bg:#003366;--header-text:#ffffff;
-    --accent:#003366;--accent-hover:#004080;--shadow:rgba(0,0,0,0.10);
-    --chat-bg:#e5ddd5;--msg-sent:#dcf8c6;--msg-recv:#ffffff;
-    --input-bg:#ffffff;--input-border:#dddddd;
-}
-[data-theme="dark"] {
-    --bg:#0f1117;--surface:#1e2130;--surface2:#262a3a;--border:#2e3348;
-    --text:#e8eaf6;--text-muted:#9fa8c0;--text-faint:#5c6480;
-    --header-bg:#0d1b3e;--header-text:#e8eaf6;
-    --accent:#4a80d4;--accent-hover:#5a90e4;--shadow:rgba(0,0,0,0.40);
-    --chat-bg:#151820;--msg-sent:#1a3a2a;--msg-recv:#1e2130;
-    --input-bg:#262a3a;--input-border:#2e3348;
-}
+:root{--bg:#f0f2f5;--surface:#ffffff;--surface2:#f8f9fa;--border:#e0e0e0;--text:#1a1a1a;--text-muted:#666666;--text-faint:#999999;--header-bg:#003366;--header-text:#ffffff;--accent:#003366;--accent-hover:#004080;--shadow:rgba(0,0,0,0.10);--chat-bg:#e5ddd5;--msg-sent:#dcf8c6;--msg-recv:#ffffff;--input-bg:#ffffff;--input-border:#dddddd;}
+[data-theme="dark"]{--bg:#0f1117;--surface:#1e2130;--surface2:#262a3a;--border:#2e3348;--text:#e8eaf6;--text-muted:#9fa8c0;--text-faint:#5c6480;--header-bg:#0d1b3e;--header-text:#e8eaf6;--accent:#4a80d4;--accent-hover:#5a90e4;--shadow:rgba(0,0,0,0.40);--chat-bg:#151820;--msg-sent:#1a3a2a;--msg-recv:#1e2130;--input-bg:#262a3a;--input-border:#2e3348;}
 *{margin:0;padding:0;box-sizing:border-box;transition:background-color 0.3s,color 0.2s,border-color 0.2s;}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
 header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px var(--shadow);}
@@ -50,6 +34,30 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
 .avatar-link:hover img{border-color:white;}
 .theme-toggle{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:var(--header-text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .theme-toggle:hover{background:rgba(255,255,255,0.25);}
+
+/* ── Notification Bell ── */
+.notif-wrap{position:relative;}
+.notif-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:var(--header-text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+.notif-btn:hover{background:rgba(255,255,255,0.25);}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid var(--header-bg);display:none;}
+.notif-badge.show{display:flex;}
+.notif-dropdown{position:absolute;top:48px;right:0;width:320px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px var(--shadow);z-index:200;display:none;overflow:hidden;}
+.notif-dropdown.open{display:block;}
+.notif-dropdown-header{padding:12px 16px;font-weight:600;font-size:0.9rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text);}
+.notif-mark-read{font-size:0.75rem;color:var(--accent);cursor:pointer;font-weight:400;}
+.notif-mark-read:hover{text-decoration:underline;}
+.notif-list{max-height:320px;overflow-y:auto;}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.notif-item:hover{background:var(--surface2);}
+.notif-item.unread{background:rgba(74,128,212,0.06);}
+[data-theme="dark"] .notif-item.unread{background:rgba(74,128,212,0.12);}
+.notif-item-icon{font-size:1.1rem;margin-right:10px;flex-shrink:0;}
+.notif-item-msg{font-size:0.83rem;color:var(--text);line-height:1.4;}
+.notif-item-time{font-size:0.72rem;color:var(--text-faint);margin-top:3px;}
+.notif-item-row{display:flex;align-items:flex-start;}
+.notif-empty{padding:24px;text-align:center;color:var(--text-faint);font-size:0.88rem;}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;margin-left:8px;}
+
 .main-content{padding:20px;transition:margin-right 0.3s;}
 .main-content.chat-open{margin-right:360px;}
 .chat-panel{position:fixed;right:0;top:70px;width:360px;height:calc(100vh - 70px);background:var(--surface);box-shadow:-3px 0 15px var(--shadow);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s ease;z-index:99;border-left:1px solid var(--border);}
@@ -95,23 +103,14 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
 .btn{background:var(--accent);color:white;border:none;padding:9px 18px;cursor:pointer;border-radius:5px;font-size:0.88rem;margin:3px 0;}
 .btn:hover{background:var(--accent-hover);}
 .btn:disabled{background:#ccc;cursor:not-allowed;}
-.btn-danger{background:#dc3545;}
-.btn-danger:hover{background:#c82333;}
-.btn-success{background:#28a745;}
-.btn-success:hover{background:#218838;}
+.btn-danger{background:#dc3545;}.btn-danger:hover{background:#c82333;}
+.btn-success{background:#28a745;}.btn-success:hover{background:#218838;}
 .btn-warning{background:#fd7e14;color:white;border:none;padding:9px 18px;cursor:pointer;border-radius:5px;font-size:0.88rem;margin:3px 0;}
 .btn-warning:hover{background:#e56a00;}
-.btn-chat{background:var(--accent);}
-.btn-chat.active-chat{background:#28a745;}
+.btn-chat{background:var(--accent);}.btn-chat.active-chat{background:#28a745;}
 .status-badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;margin-bottom:8px;}
-.status-registered{background:#f3e5f5;color:#6a1b9a;}
-.status-lost{background:#ffebee;color:#c62828;}
-.status-pending{background:#fff8e1;color:#f57f17;}
-.status-claimed{background:#e3f2fd;color:#1565c0;}
-[data-theme="dark"] .status-registered{background:#2a1040;color:#ce93d8;}
-[data-theme="dark"] .status-lost{background:#3b1018;color:#ef9a9a;}
-[data-theme="dark"] .status-pending{background:#3b2e00;color:#ffe082;}
-[data-theme="dark"] .status-claimed{background:#0d2a4a;color:#90caf9;}
+.status-registered{background:#f3e5f5;color:#6a1b9a;}.status-lost{background:#ffebee;color:#c62828;}.status-pending{background:#fff8e1;color:#f57f17;}.status-claimed{background:#e3f2fd;color:#1565c0;}
+[data-theme="dark"] .status-registered{background:#2a1040;color:#ce93d8;}[data-theme="dark"] .status-lost{background:#3b1018;color:#ef9a9a;}[data-theme="dark"] .status-pending{background:#3b2e00;color:#ffe082;}[data-theme="dark"] .status-claimed{background:#0d2a4a;color:#90caf9;}
 .myitems-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .myitems-header h3{color:var(--accent);font-size:1.3rem;}
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-faint);}
@@ -136,6 +135,24 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
   </div>
   <div class="header-right">
     <span id="welcomeMsg" style="font-size:0.9rem;opacity:0.9;"></span>
+
+    <!-- 🔔 Notification Bell -->
+    <div class="notif-wrap">
+      <button class="notif-btn" id="notifBtn" onclick="toggleNotif()" title="Notifications">
+        🔔
+        <span class="notif-badge" id="notifBadge"></span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-header">
+          Notifications
+          <span class="notif-mark-read" onclick="markAllRead()">Mark all read</span>
+        </div>
+        <div class="notif-list" id="notifList">
+          <div class="notif-empty">Loading...</div>
+        </div>
+      </div>
+    </div>
+
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
     <a href="profile.php" class="avatar-link" title="My Profile">
       <img src="<?php echo $avatarSrc ? htmlspecialchars($avatarSrc) : $fallbackAvatar; ?>"
@@ -156,8 +173,7 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
     <div class="chat-empty">Select an item to start chatting</div>
   </div>
   <div class="chat-panel-footer">
-    <input type="text" id="msgInput" placeholder="Type a message..."
-           onkeydown="if(event.key==='Enter')sendMessage()">
+    <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
     <button onclick="sendMessage()">Send</button>
   </div>
 </div>
@@ -167,8 +183,8 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
     <h2 style="margin-bottom:15px;">Items Database</h2>
     <a href="upload.php" class="upload-btn">+ Upload Item</a>
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('all', this)">🗂 All Lost Items</button>
-      <button class="tab-btn" onclick="switchTab('myitems', this)">📦 My Items</button>
+      <button class="tab-btn active" onclick="switchTab('all',this)">🗂 All Lost Items</button>
+      <button class="tab-btn" onclick="switchTab('myitems',this)">📦 My Items</button>
     </div>
     <div id="tab-all" class="tab-pane active">
       <div class="search-filter-section">
@@ -223,19 +239,77 @@ document.getElementById('welcomeMsg').innerText = "Welcome, " + userName;
 
 let currentItemId=null,allItems=[],filteredItems=[],myItems=[],allPage=1,myPage=1,pollInterval=null;
 
-/* Theme */
-function toggleTheme(){
-    const html=document.documentElement;
-    const isDark=html.getAttribute('data-theme')==='dark';
-    html.setAttribute('data-theme',isDark?'light':'dark');
-    document.getElementById('themeToggle').textContent=isDark?'🌙':'☀️';
-    localStorage.setItem('theme',isDark?'light':'dark');
+/* ── Theme ── */
+function toggleTheme(){const html=document.documentElement;const isDark=html.getAttribute('data-theme')==='dark';html.setAttribute('data-theme',isDark?'light':'dark');document.getElementById('themeToggle').textContent=isDark?'🌙':'☀️';localStorage.setItem('theme',isDark?'light':'dark');}
+(function(){const saved=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',saved);document.getElementById('themeToggle').textContent=saved==='dark'?'☀️':'🌙';})();
+
+/* ── Notifications ── */
+function toggleNotif(){
+    const dd=document.getElementById('notifDropdown');
+    dd.classList.toggle('open');
+    if(dd.classList.contains('open')) loadNotifications();
 }
-(function(){
-    const saved=localStorage.getItem('theme')||'light';
-    document.documentElement.setAttribute('data-theme',saved);
-    document.getElementById('themeToggle').textContent=saved==='dark'?'☀️':'🌙';
-})();
+
+// Close dropdown when clicking outside
+document.addEventListener('click',function(e){
+    const wrap=document.getElementById('notifDropdown');
+    const btn=document.getElementById('notifBtn');
+    if(!wrap.contains(e.target)&&!btn.contains(e.target)) wrap.classList.remove('open');
+});
+
+function loadNotifications(){
+    fetch('get_notifications.php')
+        .then(r=>r.json())
+        .then(data=>{
+            const badge=document.getElementById('notifBadge');
+            const list=document.getElementById('notifList');
+            if(data.unread>0){badge.textContent=data.unread>9?'9+':data.unread;badge.classList.add('show');}
+            else{badge.classList.remove('show');}
+            if(!data.notifications||!data.notifications.length){
+                list.innerHTML='<div class="notif-empty">🔔 No notifications yet</div>';return;
+            }
+            const icons={'ai_match':'🤖','item_found':'📦','claim_confirmed':'🎉','message':'💬'};
+            list.innerHTML=data.notifications.map(n=>`
+                <div class="notif-item ${n.is_read=='0'?'unread':''}" onclick="notifClick(${n.item_id||0})">
+                    <div class="notif-item-row">
+                        <span class="notif-item-icon">${icons[n.type]||'🔔'}</span>
+                        <div style="flex:1">
+                            <div class="notif-item-msg">${escapeHtml(n.message)}</div>
+                            <div class="notif-item-time">${timeAgo(n.created_at)}</div>
+                        </div>
+                        ${n.is_read=='0'?'<div class="notif-unread-dot"></div>':''}
+                    </div>
+                </div>`).join('');
+        })
+        .catch(()=>{document.getElementById('notifList').innerHTML='<div class="notif-empty">Failed to load</div>';});
+}
+
+function markAllRead(){
+    fetch('get_notifications.php?mark_read=1')
+        .then(()=>{
+            document.getElementById('notifBadge').classList.remove('show');
+            document.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));
+            document.querySelectorAll('.notif-unread-dot').forEach(el=>el.remove());
+        });
+}
+
+function notifClick(itemId){
+    document.getElementById('notifDropdown').classList.remove('open');
+    markAllRead();
+    if(itemId) switchTab('myitems',document.querySelectorAll('.tab-btn')[1]);
+}
+
+function timeAgo(dateStr){
+    const diff=Math.floor((Date.now()-new Date(dateStr).getTime())/1000);
+    if(diff<60)return'just now';
+    if(diff<3600)return Math.floor(diff/60)+'m ago';
+    if(diff<86400)return Math.floor(diff/3600)+'h ago';
+    return Math.floor(diff/86400)+'d ago';
+}
+
+// Poll for new notifications every 30 seconds
+loadNotifications();
+setInterval(loadNotifications, 30000);
 
 function escapeHtml(str){return String(str||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function switchTab(tab,btn){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');btn.classList.add('active');}
@@ -277,8 +351,8 @@ function loadMessages(){if(!currentItemId)return;fetch(`get_messages.php?item_id
 function sendMessage(){const msg=document.getElementById('msgInput').value.trim();if(!msg||!currentItemId)return;document.getElementById('msgInput').value='';const fd=new FormData();fd.append('item_id',currentItemId);fd.append('message',msg);fetch('send_message.php',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.status==='success')loadMessages();}).catch(()=>alert('Error sending message'));}
 
 function markAsLost(id){if(!confirm("Mark this item as LOST? It will become visible to all users."))return;fetch('mark_lost.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);if(d.status==='success'){fetch('get_items.php?view=all').then(r=>r.json()).then(data=>{allItems=filteredItems=data;displayItems(filteredItems);});fetch('get_items.php?view=mine').then(r=>r.json()).then(data=>{myItems=data;displayMyItems(myItems);});}}).catch(err=>alert('Error: '+err));}
-function reportFound(id){if(!confirm("Confirm that you found this item?"))return;fetch('report_found.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.text()).then(raw=>{let d;try{d=JSON.parse(raw);}catch(e){alert("Server error:\n"+raw);return;}alert(d.message||'Done');if(d.status==='success')location.reload();}).catch(err=>alert("Network error: "+err));}
-function confirmClaim(id){if(!confirm("Confirm this person has returned your item?"))return;fetch('claim_item.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);if(d.status==='success')location.reload();});}
+function reportFound(id){if(!confirm("Confirm that you found this item?"))return;fetch('report_found.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.text()).then(raw=>{let d;try{d=JSON.parse(raw);}catch(e){alert("Server error:\n"+raw);return;}alert(d.message||'Done');if(d.status==='success'){loadNotifications();location.reload();}}).catch(err=>alert("Network error: "+err));}
+function confirmClaim(id){if(!confirm("Confirm this person has returned your item?"))return;fetch('claim_item.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);if(d.status==='success'){loadNotifications();location.reload();}});}
 function deleteItem(id){if(!confirm("Delete this item?"))return;fetch('delete_item.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'item_id='+id}).then(r=>r.json()).then(d=>{alert(d.message);location.reload();});}
 </script>
 </body>

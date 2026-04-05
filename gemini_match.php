@@ -13,7 +13,6 @@ if (!$report_id) {
     exit;
 }
 
-// Get the found report
 $stmt = mysqli_prepare($conn, "SELECT * FROM found_reports WHERE id = ? AND finder_id = ?");
 mysqli_stmt_bind_param($stmt, 'ii', $report_id, $_SESSION['user_id']);
 mysqli_stmt_execute($stmt);
@@ -24,10 +23,10 @@ if (!$report) {
     exit;
 }
 
-// Get all LOST items that have images
 $lostItems = [];
 $res = mysqli_query($conn,
-    "SELECT id, title, description, image_path FROM items WHERE status = 'lost' AND image_path IS NOT NULL AND image_path != ''");
+    "SELECT id, title, description, image_path, owner_id FROM items
+     WHERE status = 'lost' AND image_path IS NOT NULL AND image_path != ''");
 while ($row = mysqli_fetch_assoc($res)) {
     $lostItems[] = $row;
 }
@@ -37,10 +36,7 @@ if (empty($lostItems)) {
     exit;
 }
 
-// ── Build Gemini prompt ──────────────────────────────────────────────────────
 $foundImagePath = $report['image_path'];
-
-// Try both with and without leading slash
 $pathsToTry = [
     $foundImagePath,
     ltrim($foundImagePath, '/'),
@@ -49,17 +45,11 @@ $pathsToTry = [
 
 $resolvedPath = null;
 foreach ($pathsToTry as $p) {
-    if (file_exists($p)) {
-        $resolvedPath = $p;
-        break;
-    }
+    if (file_exists($p)) { $resolvedPath = $p; break; }
 }
 
 if (!$resolvedPath) {
-    echo json_encode([
-        'error' => 'Found image file not found',
-        'tried' => $pathsToTry
-    ]);
+    echo json_encode(['error' => 'Found image file not found', 'tried' => $pathsToTry]);
     exit;
 }
 
@@ -67,7 +57,6 @@ $foundImageData   = base64_encode(file_get_contents($resolvedPath));
 $foundImageMime   = mime_content_type($resolvedPath);
 $foundDescription = $report['description'];
 
-// Build list of lost items for the prompt
 $itemListText = "";
 foreach ($lostItems as $idx => $item) {
     $itemListText .= ($idx + 1) . ". Item ID {$item['id']}: \"{$item['title']}\" — {$item['description']}\n";
@@ -92,25 +81,16 @@ Example format:
 confidence must be exactly one of: high, medium, low
 Only include items with at least low confidence.";
 
-// ── Call Gemini API ──────────────────────────────────────────────────────────
 $apiKey = GEMINI_API_KEY;
 $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}";
 $payload = [
     'contents' => [[
         'parts' => [
             ['text' => $promptText],
-            [
-                'inline_data' => [
-                    'mime_type' => $foundImageMime,
-                    'data'      => $foundImageData
-                ]
-            ]
+            ['inline_data' => ['mime_type' => $foundImageMime, 'data' => $foundImageData]]
         ]
     ]],
-    'generationConfig' => [
-        'temperature'     => 0.1,
-        'maxOutputTokens' => 1000
-    ]
+    'generationConfig' => ['temperature' => 0.1, 'maxOutputTokens' => 1000]
 ];
 
 $ch = curl_init($apiUrl);
@@ -119,7 +99,6 @@ curl_setopt($ch, CURLOPT_POST,          true);
 curl_setopt($ch, CURLOPT_POSTFIELDS,    json_encode($payload));
 curl_setopt($ch, CURLOPT_HTTPHEADER,    ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_TIMEOUT,       30);
-
 $response  = curl_exec($ch);
 $curlError = curl_error($ch);
 curl_close($ch);
@@ -131,7 +110,6 @@ if ($curlError) {
 
 $geminiData = json_decode($response, true);
 
-// Check for API-level errors (e.g. invalid key, quota exceeded)
 if (isset($geminiData['error'])) {
     echo json_encode([
         'error' => 'Gemini API error: ' . ($geminiData['error']['message'] ?? 'Unknown error'),
@@ -140,58 +118,74 @@ if (isset($geminiData['error'])) {
     exit;
 }
 
-// Extract text from Gemini response
 $rawText = $geminiData['candidates'][0]['content']['parts'][0]['text'] ?? '';
-
 if (empty($rawText)) {
-    echo json_encode([
-        'error'         => 'Gemini returned empty response',
-        'full_response' => $geminiData
-    ]);
+    echo json_encode(['error' => 'Gemini returned empty response', 'full_response' => $geminiData]);
     exit;
 }
 
-// ── Robust JSON extraction ───────────────────────────────────────────────────
-// 1. Strip markdown code fences
 $cleaned = preg_replace('/```json\s*/i', '', $rawText);
 $cleaned = preg_replace('/```\s*/i',     '', $cleaned);
 $cleaned = trim($cleaned);
-
-// 2. Extract just the JSON array using regex (handles extra text before/after)
-if (preg_match('/(\[.*\])/s', $cleaned, $m)) {
-    $cleaned = $m[1];
-}
+if (preg_match('/(\[.*\])/s', $cleaned, $m)) $cleaned = $m[1];
 
 $matches = json_decode($cleaned, true);
-
 if (!is_array($matches)) {
-    echo json_encode([
-        'error'   => 'Could not parse Gemini response as JSON',
-        'raw'     => $rawText,
-        'cleaned' => $cleaned
-    ]);
+    echo json_encode(['error' => 'Could not parse Gemini response as JSON', 'raw' => $rawText]);
     exit;
 }
 
-// ── Attach full item details ─────────────────────────────────────────────────
 $itemMap  = array_column($lostItems, null, 'id');
 $enriched = [];
+$finderName = $_SESSION['name'] ?? 'Someone';
+$finderId   = (int)$_SESSION['user_id'];
+
 foreach ($matches as $match) {
     $id   = $match['item_id'] ?? 0;
     $item = $itemMap[$id] ?? null;
-    if ($item) {
-        $enriched[] = [
-            'item_id'     => $id,
-            'title'       => $item['title'],
-            'description' => $item['description'],
-            'image_path'  => $item['image_path'],
-            'confidence'  => $match['confidence'],
-            'reason'      => $match['reason']
-        ];
+    if (!$item) continue;
+
+    $confidence = $match['confidence'] ?? 'low';
+
+    $enriched[] = [
+        'item_id'     => $id,
+        'title'       => $item['title'],
+        'description' => $item['description'],
+        'image_path'  => $item['image_path'],
+        'confidence'  => $confidence,
+        'reason'      => $match['reason']
+    ];
+
+    // ── Notify item owner ONLY on high confidence ──
+    if ($confidence === 'high') {
+        $ownerId   = (int)$item['owner_id'];
+        $itemTitle = $item['title'];
+
+        // Don't notify yourself
+        if ($ownerId && $ownerId !== $finderId) {
+            $message = "🤖 AI found a HIGH confidence match for your lost \"{$itemTitle}\"! Someone may have found it.";
+            $type    = 'ai_match';
+
+            // Avoid duplicate notifications for same report+item
+            $dupCheck = mysqli_prepare($conn,
+                "SELECT id FROM notifications
+                 WHERE user_id=? AND type='ai_match' AND item_id=?
+                 AND created_at > NOW() - INTERVAL 1 HOUR");
+            mysqli_stmt_bind_param($dupCheck, 'ii', $ownerId, $id);
+            mysqli_stmt_execute($dupCheck);
+            mysqli_stmt_store_result($dupCheck);
+
+            if (mysqli_stmt_num_rows($dupCheck) === 0) {
+                $nStmt = mysqli_prepare($conn,
+                    "INSERT INTO notifications (user_id, type, message, item_id) VALUES (?, ?, ?, ?)");
+                mysqli_stmt_bind_param($nStmt, 'issi', $ownerId, $type, $message, $id);
+                mysqli_stmt_execute($nStmt);
+            }
+            mysqli_stmt_close($dupCheck);
+        }
     }
 }
 
-// Sort: high → medium → low
 $order = ['high' => 0, 'medium' => 1, 'low' => 2];
 usort($enriched, fn($a, $b) => ($order[$a['confidence']] ?? 3) - ($order[$b['confidence']] ?? 3));
 
