@@ -259,7 +259,7 @@ header {
 <body>
 <header>
   <div class="header-left">
-    <img src="nmims-university-logo.png" alt="NMIMS" style="height:45px;object-fit:contain;filter:brightness(0) invert(1);">
+    <img src="back2u-logo.png" alt="NMIMS" style="height:45px;object-fit:contain;">
     <h3>Back2U</h3>
   </div>
   <div class="header-right">

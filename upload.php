@@ -202,7 +202,7 @@ header{background:var(--header-bg);color:var(--header-text);padding:15px 20px;di
 <body>
 <header>
   <div class="header-left">
-    <img src="nmims-university-logo.png" alt="NMIMS" style="height:42px;filter:brightness(0) invert(1);object-fit:contain;">
+    <img src="back2u-logo.png" alt="NMIMS" style="height:42px;object-fit:contain;">
     <h3>Back2U</h3>
     <?php if ($domain): ?>
     <span class="domain-badge">📍 <?php echo htmlspecialchars($domain); ?></span>
