@@ -1,837 +1,570 @@
-<html lang="en">
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back2U — College Lost &amp; Found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Back2U — College Lost &amp; Found</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --text: #111827;
+    --text-2: #4b5563;
+    --text-3: #9ca3af;
+    --border: #e5e7eb;
+    --navy: #003366;
+    --navy-dark: #001f3f;
+    --navy-light: #0a4a8f;
+    --gold: #e8a020;
+    --gold-light: #f5c84a;
+    --shadow: rgba(0,0,0,0.08);
+    --shadow-lg: rgba(0,0,0,0.16);
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    
+    --stat-color: var(--navy);
+    --em-color-1: var(--navy);
+    --em-color-2: var(--navy-light);
+    
+    --badge-lost-bg: linear-gradient(135deg, #fee2e2, #fecaca);
+    --badge-lost-text: #b91c1c;
+    --badge-found-bg: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    --badge-found-text: #15803d;
+    --badge-pending-bg: linear-gradient(135deg, #fef3c7, #fde68a);
+    --badge-pending-text: #b45309;
+  }
+  
+  .dark {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --text: #f1f5f9;
+    --text-2: #94a3b8;
+    --text-3: #475569;
+    --border: #1e293b;
+    --navy: #1a4fa3;
+    --navy-dark: #0f3070;
+    --navy-light: #2563eb;
+    --gold: #f59e0b;
+    --gold-light: #fbbf24;
+    --shadow: rgba(0,0,0,0.4);
+    --shadow-lg: rgba(0,0,0,0.6);
+    --glass: rgba(17, 24, 39, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    --stat-color: var(--gold-light);
+    --em-color-1: var(--gold);
+    --em-color-2: var(--gold-light);
+    
+    --badge-lost-bg: linear-gradient(135deg, #3b1018, #581c24);
+    --badge-lost-text: #ef9a9a;
+    --badge-found-bg: linear-gradient(135deg, #1a3a2a, #14532d);
+    --badge-found-text: #a5d6a7;
+    --badge-pending-bg: linear-gradient(135deg, #3b2e00, #713f12);
+    --badge-pending-text: #ffe082;
+  }
 
-    <style>
-        :root {
-            --bg: #f7f6f2;
-            --surface: #ffffff;
-            --text: #111827;
-            --text-2: #4b5563;
-            --text-3: #9ca3af;
-            --border: #e5e7eb;
-            --navy: #003366;
-            --navy-dark: #001f3f;
-            --navy-light: #0a4a8f;
-            --gold: #e8a020;
-            --gold-light: #f5c84a;
-            --shadow: rgba(0, 0, 0, 0.08);
-            --shadow-lg: rgba(0, 0, 0, 0.16);
-            --glass: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.3);
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(2deg); }
+    50% { transform: translateY(-5px) rotate(-1deg); }
+    75% { transform: translateY(-15px) rotate(1deg); }
+  }
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 10px var(--gold); transform: scale(1); }
+    50% { box-shadow: 0 0 20px var(--gold); transform: scale(1.1); }
+  }
+  @keyframes shine {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
 
-            --stat-color: var(--navy);
-            --em-color-1: var(--navy);
-            --em-color-2: var(--navy-light);
-
-            --badge-lost-bg: linear-gradient(135deg, #fee2e2, #fecaca);
-            --badge-lost-text: #b91c1c;
-            --badge-found-bg: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            --badge-found-text: #15803d;
-            --badge-pending-bg: linear-gradient(135deg, #fef3c7, #fde68a);
-            --badge-pending-text: #b45309;
-        }
-
-        .dark {
-            --bg: #0a0e1a;
-            --surface: #111827;
-            --text: #f1f5f9;
-            --text-2: #94a3b8;
-            --text-3: #475569;
-            --border: #1e293b;
-            --navy: #1a4fa3;
-            --navy-dark: #0f3070;
-            --navy-light: #2563eb;
-            --gold: #f59e0b;
-            --gold-light: #fbbf24;
-            --shadow: rgba(0, 0, 0, 0.4);
-            --shadow-lg: rgba(0, 0, 0, 0.6);
-            --glass: rgba(17, 24, 39, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-
-            --stat-color: var(--gold-light);
-            --em-color-1: var(--gold);
-            --em-color-2: var(--gold-light);
-
-            --badge-lost-bg: linear-gradient(135deg, #3b1018, #581c24);
-            --badge-lost-text: #ef9a9a;
-            --badge-found-bg: linear-gradient(135deg, #1a3a2a, #14532d);
-            --badge-found-text: #a5d6a7;
-            --badge-pending-bg: linear-gradient(135deg, #3b2e00, #713f12);
-            --badge-pending-text: #ffe082;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            25% {
-                transform: translateY(-10px) rotate(2deg);
-            }
-
-            50% {
-                transform: translateY(-5px) rotate(-1deg);
-            }
-
-            75% {
-                transform: translateY(-15px) rotate(1deg);
-            }
-        }
-
-        @keyframes floatUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes gradientShift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        @keyframes pulseGlow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 10px var(--gold);
-                transform: scale(1);
-            }
-
-            50% {
-                box-shadow: 0 0 20px var(--gold);
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes shine {
-            0% {
-                left: -100%;
-            }
-
-            100% {
-                left: 200%;
-            }
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .stagger-1 {
-            transition-delay: 0.1s;
-        }
-
-        .stagger-2 {
-            transition-delay: 0.2s;
-        }
-
-        .stagger-3 {
-            transition-delay: 0.3s;
-        }
-
-        .stagger-4 {
-            transition-delay: 0.4s;
-        }
-    </style>
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+</style>
 </head>
+<body class="bg-[var(--bg)] text-[var(--text)] font-['DM_Sans',sans-serif] overflow-x-hidden antialiased transition-colors duration-500">
 
-<body
-    class="bg-[var(--bg)] text-[var(--text)] font-['DM_Sans',sans-serif] overflow-x-hidden antialiased transition-colors duration-500">
+<!-- PRELOADER -->
+<div id="preloader" class="fixed inset-0 bg-[var(--bg)] z-[9999] flex items-center justify-center transition-all duration-700">
+  <div class="w-12 h-12 border-[3px] border-[var(--border)] border-t-[var(--gold)] rounded-full animate-spin"></div>
+</div>
 
-    <!-- PRELOADER -->
-    <div id="preloader"
-        class="fixed inset-0 bg-[var(--bg)] z-[9999] flex items-center justify-center transition-all duration-700">
-        <div class="w-12 h-12 border-[3px] border-[var(--border)] border-t-[var(--gold)] rounded-full animate-spin">
-        </div>
-    </div>
+<!-- NAV -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-[100] px-6 md:px-[5%] h-[70px] flex items-center justify-between transition-all duration-300 bg-transparent">
+  <a href="#" class="font-['Playfair_Display',serif] text-2xl font-extrabold text-[var(--gold)] tracking-tighter hover:scale-105 transition-transform flex items-center gap-1">
+    Back<span class="text-[var(--text)]">2U</span>
+  </a>
+  <div class="flex items-center gap-5">
+    <a href="#how" class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
+      How it works
+      <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+    </a>
+    <a href="#features" class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
+      Features
+      <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+    </a>
+    <a href="#colleges" class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
+      Colleges
+      <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+    </a>
+    <button id="themeBtn" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] text-[var(--text)] flex items-center justify-center text-lg hover:bg-[var(--gold)] hover:text-white hover:border-[var(--gold)] transition-all duration-300 hover:rotate-12 shadow-sm">
+      <iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>
+    </button>
+    <a href="index.html?mode=register" class="group relative overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,51,102,0.3)]">
+      <span class="relative z-10">Get Started</span>
+      <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shine_0.8s_ease-in-out]"></div>
+    </a>
+  </div>
+</nav>
 
-    <!-- NAV -->
-    <nav id="navbar"
-        class="fixed top-0 left-0 right-0 z-[100] px-6 md:px-[5%] h-[70px] flex items-center justify-between transition-all duration-300 bg-transparent">
-        <a href="#"
-            class="font-['Playfair_Display',serif] text-2xl font-extrabold text-[var(--gold)] tracking-tighter hover:scale-105 transition-transform flex items-center gap-1">
-            Back<span class="text-[var(--text)]">2U</span>
+<!-- HERO -->
+<section class="min-h-screen flex items-center px-6 md:px-[5%] pt-[100px] pb-[60px] relative overflow-hidden">
+  <div class="absolute inset-0 z-0 bg-gradient-to-br from-[var(--navy-dark)] via-[var(--navy)] to-[var(--navy-light)] opacity-[0.03] [.dark_&amp;]:opacity-20 bg-[length:200%_200%] animate-[gradientShift_8s_ease_infinite]"></div>
+  <div class="absolute inset-0 z-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:40px_40px] opacity-40"></div>
+  
+  <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+    <div class="absolute rounded-full opacity-15 animate-[float_6s_ease-in-out_infinite] w-[600px] h-[600px] -right-[200px] -top-[150px] bg-gradient-to-br from-[var(--navy)] to-transparent"></div>
+    <div class="absolute rounded-full opacity-15 animate-[float_6s_ease-in-out_infinite_1s] w-[350px] h-[350px] right-[100px] top-[100px] bg-gradient-to-br from-[var(--gold)] to-transparent"></div>
+    <div class="absolute rounded-full opacity-[0.08] animate-[float_6s_ease-in-out_infinite_2s] w-[200px] h-[200px] -left-[50px] bottom-[150px] bg-[var(--gold)]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-[1200px] mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-[60px] items-center">
+    <div class="animate-[floatUp_0.8s_ease_both]">
+      <div class="inline-flex items-center gap-2 bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 px-4 py-2 rounded-full text-xs font-semibold tracking-wide mb-6 backdrop-blur-sm relative overflow-hidden">
+        <span class="w-1.5 h-1.5 bg-[var(--gold)] rounded-full animate-[pulseGlow_2s_infinite]"></span>
+        AI-Powered Lost &amp; Found
+      </div>
+      <h1 class="font-['Playfair_Display',serif] text-[clamp(2.8rem,5vw,4.2rem)] font-extrabold leading-[1.1] tracking-tight mb-6">
+        Lost something?<br>We'll get it <em class="not-italic bg-gradient-to-br from-[var(--gold)] to-[var(--gold-light)] bg-clip-text text-transparent">Back2U.</em>
+      </h1>
+      <p class="text-base md:text-lg text-[var(--text-2)] leading-relaxed mb-10 max-w-[480px]">
+        The smart lost &amp; found platform built for Indian colleges. Register items, get AI-matched with finders, and reunite with your belongings — fast.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="index.html?mode=register" class="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] text-white px-8 py-4 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,51,102,0.35)]">
+          <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shine_1s_ease-in-out]"></div>
+          <iconify-icon icon="solar:diploma-linear" stroke-width="1.5" class="text-lg relative z-10"></iconify-icon>
+          <span class="relative z-10">Sign up with College Email</span>
         </a>
-        <div class="flex items-center gap-5">
-            <a href="#how"
-                class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
-                How it works
-                <span
-                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a href="#features"
-                class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
-                Features
-                <span
-                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a href="#colleges"
-                class="hidden md:block text-[var(--text)] text-sm font-medium relative py-1 group transition-colors hover:text-[var(--gold)]">
-                Colleges
-                <span
-                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <button id="themeBtn" onclick="toggleTheme()"
-                class="w-10 h-10 rounded-full bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] text-[var(--text)] flex items-center justify-center text-lg hover:bg-[var(--gold)] hover:text-white hover:border-[var(--gold)] transition-all duration-300 hover:rotate-12 shadow-sm">
-                <iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>
-            </button>
-            <a href="index.html?mode=register"
-                class="group relative overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,51,102,0.3)]">
-                <span class="relative z-10">Get Started</span>
-                <div
-                    class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shine_0.8s_ease-in-out]">
-                </div>
-            </a>
+        <a href="#how" class="inline-flex items-center justify-center gap-2 border-2 border-[var(--border)] text-[var(--text)] bg-[var(--surface)] px-8 py-4 rounded-xl text-sm font-semibold transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1">
+          See how it works <iconify-icon icon="solar:arrow-right-linear" stroke-width="1.5"></iconify-icon>
+        </a>
+      </div>
+      
+      <div class="flex flex-wrap gap-8 lg:gap-12 mt-14">
+        <div class="relative group">
+          <div class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">AI</div>
+          <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">Image Matching</div>
         </div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="min-h-screen flex items-center px-6 md:px-[5%] pt-[100px] pb-[60px] relative overflow-hidden">
-        <div
-            class="absolute inset-0 z-0 bg-gradient-to-br from-[var(--navy-dark)] via-[var(--navy)] to-[var(--navy-light)] opacity-[0.03] [.dark_&amp;]:opacity-20 bg-[length:200%_200%] animate-[gradientShift_8s_ease_infinite]">
+        <div class="relative pl-5 lg:pl-6 group">
+          <div class="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-[var(--gold)] to-[var(--navy)]"></div>
+          <div class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">Real</div>
+          <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">-time Chat</div>
         </div>
-        <div
-            class="absolute inset-0 z-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:40px_40px] opacity-40">
+        <div class="relative pl-5 lg:pl-6 group">
+          <div class="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-[var(--gold)] to-[var(--navy)]"></div>
+          <div class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">Multi</div>
+          <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">-College Support</div>
         </div>
-
-        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-            <div
-                class="absolute rounded-full opacity-15 animate-[float_6s_ease-in-out_infinite] w-[600px] h-[600px] -right-[200px] -top-[150px] bg-gradient-to-br from-[var(--navy)] to-transparent">
-            </div>
-            <div
-                class="absolute rounded-full opacity-15 animate-[float_6s_ease-in-out_infinite_1s] w-[350px] h-[350px] right-[100px] top-[100px] bg-gradient-to-br from-[var(--gold)] to-transparent">
-            </div>
-            <div
-                class="absolute rounded-full opacity-[0.08] animate-[float_6s_ease-in-out_infinite_2s] w-[200px] h-[200px] -left-[50px] bottom-[150px] bg-[var(--gold)]">
-            </div>
+      </div>
+    </div>
+    
+    <div class="hidden lg:flex justify-center items-center relative perspective-[1000px]">
+      <div class="absolute -top-6 -right-6 bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl px-4 py-3 shadow-[0_10px_30px_var(--shadow)] flex items-center gap-2.5 text-xs font-semibold whitespace-nowrap animate-[float_3s_ease-in-out_infinite] z-20 hover:scale-105 transition-transform">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></span> Item found nearby!
+      </div>
+      <div class="absolute bottom-5 -left-8 bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl px-4 py-3 shadow-[0_10px_30px_var(--shadow)] flex items-center gap-2.5 text-xs font-semibold whitespace-nowrap animate-[float_3s_ease-in-out_infinite_1.5s] z-20 hover:scale-105 transition-transform">
+        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6]"></span> 92% AI match
+      </div>
+      
+      <div class="w-full max-w-[380px] bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-[20px] shadow-[0_25px_80px_var(--shadow-lg),0_0_40px_rgba(232,160,32,0.1)] p-7 animate-[floatUp_0.8s_ease_0.3s_both] transition-transform duration-500 hover:-translate-y-2 hover:rotate-x-2">
+        <div class="flex items-center gap-3 mb-5 pb-4 border-b border-[var(--glass-border)]">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] flex items-center justify-center text-white text-xs font-bold shadow-md">B2U</div>
+          <div>
+            <div class="text-sm font-semibold tracking-tight">Lost Items Feed</div>
+            <div class="text-xs text-[var(--text-3)]">NMIMS Mumbai · 3 new items</div>
+          </div>
         </div>
-
-        <div class="relative z-10 max-w-[1200px] mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-[60px] items-center">
-            <div class="animate-[floatUp_0.8s_ease_both]">
-                <div
-                    class="inline-flex items-center gap-2 bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 px-4 py-2 rounded-full text-xs font-semibold tracking-wide mb-6 backdrop-blur-sm relative overflow-hidden">
-                    <span class="w-1.5 h-1.5 bg-[var(--gold)] rounded-full animate-[pulseGlow_2s_infinite]"></span>
-                    AI-Powered Lost &amp; Found
-                </div>
-                <h1
-                    class="font-['Playfair_Display',serif] text-[clamp(2.8rem,5vw,4.2rem)] font-extrabold leading-[1.1] tracking-tight mb-6">
-                    Lost something?<br>We'll get it <em
-                        class="not-italic bg-gradient-to-br from-[var(--gold)] to-[var(--gold-light)] bg-clip-text text-transparent">Back2U.</em>
-                </h1>
-                <p class="text-base md:text-lg text-[var(--text-2)] leading-relaxed mb-10 max-w-[480px]">
-                    The smart lost &amp; found platform built for Indian colleges. Register items, get AI-matched with
-                    finders, and reunite with your belongings — fast.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="index.html?mode=register"
-                        class="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] text-white px-8 py-4 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,51,102,0.35)]">
-                        <div
-                            class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shine_1s_ease-in-out]">
-                        </div>
-                        <iconify-icon icon="solar:diploma-linear" stroke-width="1.5"
-                            class="text-lg relative z-10"></iconify-icon>
-                        <span class="relative z-10">Sign up with College Email</span>
-                    </a>
-                    <a href="#how"
-                        class="inline-flex items-center justify-center gap-2 border-2 border-[var(--border)] text-[var(--text)] bg-[var(--surface)] px-8 py-4 rounded-xl text-sm font-semibold transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1">
-                        See how it works <iconify-icon icon="solar:arrow-right-linear"
-                            stroke-width="1.5"></iconify-icon>
-                    </a>
-                </div>
-
-                <div class="flex flex-wrap gap-8 lg:gap-12 mt-14">
-                    <div class="relative group">
-                        <div
-                            class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">
-                            AI</div>
-                        <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">Image
-                            Matching</div>
-                    </div>
-                    <div class="relative pl-5 lg:pl-6 group">
-                        <div
-                            class="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-[var(--gold)] to-[var(--navy)]">
-                        </div>
-                        <div
-                            class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">
-                            Real</div>
-                        <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">-time Chat
-                        </div>
-                    </div>
-                    <div class="relative pl-5 lg:pl-6 group">
-                        <div
-                            class="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-[var(--gold)] to-[var(--navy)]">
-                        </div>
-                        <div
-                            class="font-['Playfair_Display',serif] text-3xl lg:text-[2.2rem] font-extrabold text-[var(--stat-color)] group-hover:scale-110 transition-transform origin-left leading-none">
-                            Multi</div>
-                        <div class="text-xs text-[var(--text-3)] font-semibold uppercase tracking-wide mt-2">-College
-                            Support</div>
-                    </div>
-                </div>
+        
+        <div class="space-y-3">
+          <div class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0"><iconify-icon icon="solar:backpack-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold truncate">Blue Backpack</div>
+              <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Library, 3rd floor</div>
             </div>
-
-            <div class="hidden lg:flex justify-center items-center relative perspective-[1000px]">
-                <div
-                    class="absolute -top-6 -right-6 bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl px-4 py-3 shadow-[0_10px_30px_var(--shadow)] flex items-center gap-2.5 text-xs font-semibold whitespace-nowrap animate-[float_3s_ease-in-out_infinite] z-20 hover:scale-105 transition-transform">
-                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></span> Item found
-                    nearby!
-                </div>
-                <div
-                    class="absolute bottom-5 -left-8 bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl px-4 py-3 shadow-[0_10px_30px_var(--shadow)] flex items-center gap-2.5 text-xs font-semibold whitespace-nowrap animate-[float_3s_ease-in-out_infinite_1.5s] z-20 hover:scale-105 transition-transform">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6]"></span> 92% AI match
-                </div>
-
-                <div
-                    class="w-full max-w-[380px] bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-[20px] shadow-[0_25px_80px_var(--shadow-lg),0_0_40px_rgba(232,160,32,0.1)] p-7 animate-[floatUp_0.8s_ease_0.3s_both] transition-transform duration-500 hover:-translate-y-2 hover:rotate-x-2">
-                    <div class="flex items-center gap-3 mb-5 pb-4 border-b border-[var(--glass-border)]">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--navy)] to-[var(--navy-light)] flex items-center justify-center text-white text-xs font-bold shadow-md">
-                            B2U</div>
-                        <div>
-                            <div class="text-sm font-semibold tracking-tight">Lost Items Feed</div>
-                            <div class="text-xs text-[var(--text-3)]">NMIMS Mumbai · 3 new items</div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div
-                            class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
-                            <div
-                                class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                                <iconify-icon icon="solar:backpack-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold truncate">Blue Backpack</div>
-                                <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Library, 3rd floor</div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"
-                                style="background: var(--badge-lost-bg); color: var(--badge-lost-text);">LOST</span>
-                        </div>
-
-                        <div
-                            class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
-                            <div
-                                class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                                <iconify-icon icon="solar:smartphone-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold truncate">iPhone 14 Pro</div>
-                                <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Canteen area</div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"
-                                style="background: var(--badge-pending-bg); color: var(--badge-pending-text);">PENDING</span>
-                        </div>
-
-                        <div
-                            class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
-                            <div
-                                class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                                <iconify-icon icon="solar:key-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold truncate">Honda Car Keys</div>
-                                <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Parking lot B</div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"
-                                style="background: var(--badge-found-bg); color: var(--badge-found-text);">CLAIMED</span>
-                        </div>
-                    </div>
-
-                    <div
-                        class="mt-4 bg-gradient-to-br from-[var(--navy)]/10 to-[var(--gold)]/10 border border-dashed border-[var(--glass-border)] rounded-xl p-3.5 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] hover:from-[var(--navy)]/15 hover:to-[var(--gold)]/15">
-                        <iconify-icon icon="solar:magic-stick-3-linear"
-                            class="text-2xl text-[var(--gold)] animate-[pulseGlow_2s_infinite] shrink-0"></iconify-icon>
-                        <div class="text-xs text-[var(--text-2)] leading-relaxed">
-                            <strong class="text-[var(--stat-color)] font-semibold">AI found a match!</strong> Your
-                            backpack matches 3 found reports.
-                        </div>
-                    </div>
-                </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0" style="background: var(--badge-lost-bg); color: var(--badge-lost-text);">LOST</span>
+          </div>
+          
+          <div class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
+            <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0"><iconify-icon icon="solar:smartphone-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold truncate">iPhone 14 Pro</div>
+              <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Canteen area</div>
             </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0" style="background: var(--badge-pending-bg); color: var(--badge-pending-text);">PENDING</span>
+          </div>
+          
+          <div class="flex gap-3 items-center p-3 rounded-xl bg-[var(--bg)] border border-transparent hover:border-[var(--gold)] hover:bg-[var(--surface)] hover:translate-x-1 transition-all cursor-pointer group">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 text-2xl shadow-sm group-hover:scale-105 transition-transform shrink-0"><iconify-icon icon="solar:key-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold truncate">Honda Car Keys</div>
+              <div class="text-xs text-[var(--text-3)] mt-0.5 truncate">📍 Parking lot B</div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full shrink-0" style="background: var(--badge-found-bg); color: var(--badge-found-text);">CLAIMED</span>
+          </div>
         </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section id="how" class="py-[100px] px-6 md:px-[5%] relative">
-        <div class="max-w-[1200px] mx-auto">
-            <div class="text-center reveal max-w-2xl mx-auto mb-14">
-                <div
-                    class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
-                    <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> The process
-                </div>
-                <h2
-                    class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight tracking-tight mb-4">
-                    Simple. Fast. <em
-                        class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">Reunited.</em>
-                </h2>
-                <p class="text-base text-[var(--text-2)] leading-relaxed">
-                    Four steps to get your item back — powered by AI image matching and real-time communication.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
-                <div
-                    class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-1">
-                    <div
-                        class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400">
-                    </div>
-                    <div
-                        class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">
-                        1</div>
-                    <div
-                        class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--navy)]/10 text-[var(--navy)] [.dark_&amp;]:bg-[var(--navy)]/30 [.dark_&amp;]:text-[var(--gold)]">
-                        <iconify-icon icon="solar:document-text-linear" stroke-width="1.5"></iconify-icon>
-                    </div>
-                    <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Register
-                        Your Item</h3>
-                    <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Upload a photo and description
-                        of your item. It stays private until you're ready to report it lost.</p>
-                </div>
-
-                <div
-                    class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-2">
-                    <div
-                        class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400">
-                    </div>
-                    <div
-                        class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">
-                        2</div>
-                    <div
-                        class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--gold)]/10 text-[var(--gold)] [.dark_&amp;]:bg-[var(--gold)]/20 [.dark_&amp;]:text-[var(--gold-light)]">
-                        <iconify-icon icon="solar:record-circle-linear" stroke-width="1.5"></iconify-icon>
-                    </div>
-                    <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Mark as
-                        Lost</h3>
-                    <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">When something goes missing,
-                        mark it lost. It appears in the public feed for your college community.</p>
-                </div>
-
-                <div
-                    class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-3">
-                    <div
-                        class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400">
-                    </div>
-                    <div
-                        class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">
-                        3</div>
-                    <div
-                        class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-green-500/10 text-green-600 [.dark_&amp;]:bg-green-500/20 [.dark_&amp;]:text-green-400">
-                        <iconify-icon icon="solar:magic-stick-3-linear" stroke-width="1.5"></iconify-icon>
-                    </div>
-                    <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">AI Matches
-                        Items</h3>
-                    <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Our Gemini AI compares found
-                        item photos with lost items and ranks matches by confidence score.</p>
-                </div>
-
-                <div
-                    class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-4">
-                    <div
-                        class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400">
-                    </div>
-                    <div
-                        class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">
-                        4</div>
-                    <div
-                        class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-blue-500/10 text-blue-600 [.dark_&amp;]:bg-blue-500/20 [.dark_&amp;]:text-blue-400">
-                        <iconify-icon icon="solar:chat-round-line-linear" stroke-width="1.5"></iconify-icon>
-                    </div>
-                    <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Chat &amp;
-                        Confirm</h3>
-                    <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Chat with the finder directly
-                        in the app. Confirm the return and the item is marked as claimed.</p>
-                </div>
-            </div>
+        
+        <div class="mt-4 bg-gradient-to-br from-[var(--navy)]/10 to-[var(--gold)]/10 border border-dashed border-[var(--glass-border)] rounded-xl p-3.5 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] hover:from-[var(--navy)]/15 hover:to-[var(--gold)]/15">
+          <iconify-icon icon="solar:magic-stick-3-linear" class="text-2xl text-[var(--gold)] animate-[pulseGlow_2s_infinite] shrink-0"></iconify-icon>
+          <div class="text-xs text-[var(--text-2)] leading-relaxed">
+            <strong class="text-[var(--stat-color)] font-semibold">AI found a match!</strong> Your backpack matches 3 found reports.
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- FEATURES -->
-    <section id="features"
-        class="py-[100px] px-6 md:px-[5%] bg-[var(--surface)] relative border-y border-[var(--border)]">
-        <div class="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 lg:gap-[70px] items-center">
-            <div class="reveal">
-                <div
-                    class="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
-                    <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> Why Back2U
-                </div>
-                <h2
-                    class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.15] tracking-tight mb-10">
-                    Built for how<br><em
-                        class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">campuses
-                        work.</em>
-                </h2>
-
-                <div class="space-y-4">
-                    <div
-                        class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
-                        <div
-                            class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--navy)]/10 text-[var(--navy)] [.dark_&amp;]:bg-[var(--navy)]/30 [.dark_&amp;]:text-[var(--gold)]">
-                            <iconify-icon icon="solar:lock-password-linear" stroke-width="1.5"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">College Email
-                                Only</h4>
-                            <p class="text-sm text-[var(--text-2)] leading-relaxed">Only verified students and faculty
-                                with institutional emails can access your college's feed. No outsiders.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
-                        <div
-                            class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--gold)]/10 text-[var(--gold)] [.dark_&amp;]:bg-[var(--gold)]/20 [.dark_&amp;]:text-[var(--gold-light)]">
-                            <iconify-icon icon="solar:cpu-linear" stroke-width="1.5"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Gemini AI
-                                Matching</h4>
-                            <p class="text-sm text-[var(--text-2)] leading-relaxed">Google's Gemini AI visually compares
-                                item photos and returns confidence-scored matches instantly.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
-                        <div
-                            class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-green-500/10 text-green-600 [.dark_&amp;]:bg-green-500/20 [.dark_&amp;]:text-green-400">
-                            <iconify-icon icon="solar:chat-round-line-linear" stroke-width="1.5"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Built-in Chat
-                            </h4>
-                            <p class="text-sm text-[var(--text-2)] leading-relaxed">Real-time messaging between item
-                                owners and finders — no need for WhatsApp or external apps.</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
-                        <div
-                            class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-blue-500/10 text-blue-600 [.dark_&amp;]:bg-blue-500/20 [.dark_&amp;]:text-blue-400">
-                            <iconify-icon icon="solar:server-square-linear" stroke-width="1.5"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Admin Dashboard
-                            </h4>
-                            <p class="text-sm text-[var(--text-2)] leading-relaxed">College admins get a full control
-                                panel — manage items, users, and resolve disputes effortlessly.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="reveal stagger-2">
-                <div
-                    class="bg-[var(--bg)] rounded-3xl p-6 md:p-8 border border-[var(--border)] shadow-[0_20px_60px_var(--shadow)]">
-                    <div
-                        class="text-xs font-bold text-[var(--text-3)] tracking-widest uppercase mb-6 flex items-center gap-2">
-                        <iconify-icon icon="solar:magic-stick-3-linear"
-                            class="text-lg text-[var(--gold)] animate-[pulse_2s_infinite]"></iconify-icon> AI Match
-                        Results
-                    </div>
-
-                    <div class="space-y-3">
-                        <div
-                            class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
-                            <div
-                                class="w-[50px] h-[50px] rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                                <iconify-icon icon="solar:backpack-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Blue
-                                    Wildcraft Backpack</div>
-                                <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found at Library · Rahul S.
-                                </div>
-                                <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
-                                    <div
-                                        class="h-full rounded-full bg-gradient-to-r from-green-500 to-green-400 w-[92%] transition-all duration-1000">
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0"
-                                style="background: var(--badge-found-bg); color: var(--badge-found-text);">92%</span>
-                        </div>
-
-                        <div
-                            class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
-                            <div
-                                class="w-[50px] h-[50px] rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                                <iconify-icon icon="solar:case-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Dark Blue
-                                    Laptop Bag</div>
-                                <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found near Canteen · Priya M.
-                                </div>
-                                <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
-                                    <div
-                                        class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 w-[67%] transition-all duration-1000">
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0"
-                                style="background: var(--badge-pending-bg); color: var(--badge-pending-text);">67%</span>
-                        </div>
-
-                        <div
-                            class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
-                            <div
-                                class="w-[50px] h-[50px] rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                                <iconify-icon icon="solar:bag-linear"></iconify-icon></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Sports Kit
-                                    Bag</div>
-                                <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found at Sports Complex · Amit
-                                    K.</div>
-                                <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
-                                    <div
-                                        class="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400 w-[31%] transition-all duration-1000">
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0"
-                                style="background: var(--badge-lost-bg); color: var(--badge-lost-text);">31%</span>
-                        </div>
-                    </div>
-
-                    <div
-                        class="mt-5 p-3.5 bg-[var(--bg)] rounded-xl text-xs text-[var(--text-2)] text-center border border-[var(--border)]">
-                        Powered by <strong
-                            class="bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent font-semibold">Google
-                            Gemini AI</strong> · Updated in real-time
-                    </div>
-                </div>
-            </div>
+<!-- HOW IT WORKS -->
+<section id="how" class="py-[100px] px-6 md:px-[5%] relative">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center reveal max-w-2xl mx-auto mb-14">
+      <div class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
+        <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> The process
+      </div>
+      <h2 class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight tracking-tight mb-4">
+        Simple. Fast. <em class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">Reunited.</em>
+      </h2>
+      <p class="text-base text-[var(--text-2)] leading-relaxed">
+        Four steps to get your item back — powered by AI image matching and real-time communication.
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
+      <div class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-1">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400"></div>
+        <div class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">1</div>
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--navy)]/10 text-[var(--navy)] [.dark_&amp;]:bg-[var(--navy)]/30 [.dark_&amp;]:text-[var(--gold)]">
+          <iconify-icon icon="solar:document-text-linear" stroke-width="1.5"></iconify-icon>
         </div>
-    </section>
-
-    <!-- COLLEGES -->
-    <section id="colleges" class="py-[100px] px-6 md:px-[5%] relative">
-        <div class="max-w-[1200px] mx-auto">
-            <div class="text-center reveal max-w-2xl mx-auto">
-                <div
-                    class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
-                    <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> Open to all
-                </div>
-                <h2
-                    class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight tracking-tight mb-6">
-                    Works with any <em
-                        class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">Indian
-                        college</em> domain.
-                </h2>
-                <p class="text-base text-[var(--text-2)] leading-relaxed">
-                    Any student with an official institutional email — <code
-                        class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.ac.in</code>,
-                    <code
-                        class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.edu.in</code>,
-                    or <code
-                        class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.edu</code>
-                    — can sign up instantly.
-                </p>
-            </div>
-
-            <div class="flex flex-wrap justify-center gap-3.5 mt-12 reveal">
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @nmims.edu
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @nmims.in
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span>
-                    @iitb.ac.in
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span>
-                    @iitd.ac.in
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span>
-                    @bits-pilani.ac.in
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @vit.ac.in
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span>
-                    @manipal.edu
-                </div>
-                <div
-                    class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span>
-                    @christ.edu
-                </div>
-                <div class="border-2 border-dashed border-[var(--border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-3)] flex items-center gap-2 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:bg-[var(--surface)] cursor-pointer"
-                    onclick="alert('Your college can be added by the admin!')">
-                    + Your College
-                </div>
-            </div>
+        <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Register Your Item</h3>
+        <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Upload a photo and description of your item. It stays private until you're ready to report it lost.</p>
+      </div>
+      
+      <div class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-2">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400"></div>
+        <div class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">2</div>
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--gold)]/10 text-[var(--gold)] [.dark_&amp;]:bg-[var(--gold)]/20 [.dark_&amp;]:text-[var(--gold-light)]">
+          <iconify-icon icon="solar:record-circle-linear" stroke-width="1.5"></iconify-icon>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section
-        class="relative py-[120px] px-6 md:px-[5%] bg-gradient-to-br from-[var(--navy-dark)] via-[var(--navy)] to-[var(--navy-light)] [.dark_&amp;]:from-[#0d1b3e] [.dark_&amp;]:via-[#1a3a7a] [.dark_&amp;]:to-[#2563eb] overflow-hidden">
-        <div class="absolute inset-0 opacity-50"
-            style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+        <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Mark as Lost</h3>
+        <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">When something goes missing, mark it lost. It appears in the public feed for your college community.</p>
+      </div>
+      
+      <div class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-3">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400"></div>
+        <div class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">3</div>
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-green-500/10 text-green-600 [.dark_&amp;]:bg-green-500/20 [.dark_&amp;]:text-green-400">
+          <iconify-icon icon="solar:magic-stick-3-linear" stroke-width="1.5"></iconify-icon>
         </div>
-
-        <div class="relative z-10 max-w-[800px] mx-auto text-center reveal">
-            <div
-                class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-white/60 mb-6">
-                Ready to find your stuff?
-            </div>
-            <h2
-                class="font-['Playfair_Display',serif] text-[clamp(2.5rem,5vw,4rem)] font-extrabold text-white leading-[1.1] tracking-tight mb-6">
-                Lost something today?<br>Sign up in 30 seconds.
-            </h2>
-            <p class="text-base md:text-lg text-white/80 max-w-[540px] mx-auto mb-10 leading-relaxed">
-                Use your college email to get started. No apps to download, no complicated setup — just sign in and
-                start searching.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="index.html?mode=register"
-                    class="bg-[var(--gold)] text-[#1a1a1a] px-8 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover:bg-[var(--gold-light)] hover:shadow-[0_15px_40px_rgba(232,160,32,0.4)] hover:-translate-y-1 w-full sm:w-auto flex justify-center items-center gap-2">
-                    <iconify-icon icon="solar:diploma-linear" stroke-width="1.5" class="text-xl"></iconify-icon> Sign up
-                    with College Email
-                </a>
-                <a href="index.html?mode=login"
-                    class="border-2 border-white/30 text-white px-8 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover:border-white hover:bg-white/10 hover:-translate-y-1 w-full sm:w-auto text-center">
-                    Already have an account? Login
-                </a>
-            </div>
+        <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">AI Matches Items</h3>
+        <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Our Gemini AI compares found item photos with lost items and ranks matches by confidence score.</p>
+      </div>
+      
+      <div class="relative p-8 rounded-[18px] bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_20px_50px_var(--shadow-lg)] overflow-hidden group reveal stagger-4">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--navy)] to-[var(--gold)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-400"></div>
+        <div class="absolute top-3 right-5 font-['Playfair_Display',serif] text-[4rem] font-extrabold text-[var(--navy)] opacity-[0.06] [.dark_&amp;]:text-[var(--gold)] [.dark_&amp;]:opacity-10 leading-none">4</div>
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-blue-500/10 text-blue-600 [.dark_&amp;]:bg-blue-500/20 [.dark_&amp;]:text-blue-400">
+          <iconify-icon icon="solar:chat-round-line-linear" stroke-width="1.5"></iconify-icon>
         </div>
-    </section>
+        <h3 class="text-base font-semibold mb-3 tracking-tight text-[var(--text)] relative z-10">Chat &amp; Confirm</h3>
+        <p class="text-sm text-[var(--text-2)] leading-relaxed relative z-10">Chat with the finder directly in the app. Confirm the return and the item is marked as claimed.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer class="bg-[var(--surface)] border-t border-[var(--border)] py-10 px-6 md:px-[5%]">
-        <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="font-['Playfair_Display',serif] text-2xl font-extrabold text-[var(--gold)] tracking-tighter">
-                Back<span class="text-[var(--text-2)]">2U</span>
-            </div>
-            <div class="text-sm text-[var(--text-3)] text-center md:text-left">
-                Built for NMIMS · Powered by Gemini AI
-            </div>
-            <div class="flex gap-6">
-                <a href="index.html"
-                    class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
-                    Login
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="#how"
-                    class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
-                    How it works
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="#features"
-                    class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
-                    Features
-                    <span
-                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
-                </a>
-            </div>
+<!-- FEATURES -->
+<section id="features" class="py-[100px] px-6 md:px-[5%] bg-[var(--surface)] relative border-y border-[var(--border)]">
+  <div class="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-16 lg:gap-[70px] items-center">
+    <div class="reveal">
+      <div class="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
+        <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> Why Back2U
+      </div>
+      <h2 class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.15] tracking-tight mb-10">
+        Built for how<br><em class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">campuses work.</em>
+      </h2>
+      
+      <div class="space-y-4">
+        <div class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
+          <div class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--navy)]/10 text-[var(--navy)] [.dark_&amp;]:bg-[var(--navy)]/30 [.dark_&amp;]:text-[var(--gold)]">
+            <iconify-icon icon="solar:lock-password-linear" stroke-width="1.5"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">College Email Only</h4>
+            <p class="text-sm text-[var(--text-2)] leading-relaxed">Only verified students and faculty with institutional emails can access your college's feed. No outsiders.</p>
+          </div>
         </div>
-    </footer>
+        
+        <div class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
+          <div class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--gold)]/10 text-[var(--gold)] [.dark_&amp;]:bg-[var(--gold)]/20 [.dark_&amp;]:text-[var(--gold-light)]">
+            <iconify-icon icon="solar:cpu-linear" stroke-width="1.5"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Gemini AI Matching</h4>
+            <p class="text-sm text-[var(--text-2)] leading-relaxed">Google's Gemini AI visually compares item photos and returns confidence-scored matches instantly.</p>
+          </div>
+        </div>
+        
+        <div class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
+          <div class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-green-500/10 text-green-600 [.dark_&amp;]:bg-green-500/20 [.dark_&amp;]:text-green-400">
+            <iconify-icon icon="solar:chat-round-line-linear" stroke-width="1.5"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Built-in Chat</h4>
+            <p class="text-sm text-[var(--text-2)] leading-relaxed">Real-time messaging between item owners and finders — no need for WhatsApp or external apps.</p>
+          </div>
+        </div>
+        
+        <div class="flex gap-5 p-5 rounded-2xl transition-all duration-300 hover:bg-[var(--glass)] hover:border-[var(--glass-border)] border border-transparent hover:translate-x-2 group">
+          <div class="w-[50px] h-[50px] rounded-[12px] flex items-center justify-center text-2xl shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 bg-blue-500/10 text-blue-600 [.dark_&amp;]:bg-blue-500/20 [.dark_&amp;]:text-blue-400">
+            <iconify-icon icon="solar:server-square-linear" stroke-width="1.5"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-base font-semibold mb-1.5 tracking-tight text-[var(--text)]">Admin Dashboard</h4>
+            <p class="text-sm text-[var(--text-2)] leading-relaxed">College admins get a full control panel — manage items, users, and resolve disputes effortlessly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="reveal stagger-2">
+      <div class="bg-[var(--bg)] rounded-3xl p-6 md:p-8 border border-[var(--border)] shadow-[0_20px_60px_var(--shadow)]">
+        <div class="text-xs font-bold text-[var(--text-3)] tracking-widest uppercase mb-6 flex items-center gap-2">
+          <iconify-icon icon="solar:magic-stick-3-linear" class="text-lg text-[var(--gold)] animate-[pulse_2s_infinite]"></iconify-icon> AI Match Results
+        </div>
+        
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
+            <div class="w-[50px] h-[50px] rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl shrink-0 group-hover:scale-105 transition-transform"><iconify-icon icon="solar:backpack-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Blue Wildcraft Backpack</div>
+              <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found at Library · Rahul S.</div>
+              <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
+                <div class="h-full rounded-full bg-gradient-to-r from-green-500 to-green-400 w-[92%] transition-all duration-1000"></div>
+              </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0" style="background: var(--badge-found-bg); color: var(--badge-found-text);">92%</span>
+          </div>
+          
+          <div class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
+            <div class="w-[50px] h-[50px] rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 text-2xl shrink-0 group-hover:scale-105 transition-transform"><iconify-icon icon="solar:case-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Dark Blue Laptop Bag</div>
+              <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found near Canteen · Priya M.</div>
+              <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
+                <div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 w-[67%] transition-all duration-1000"></div>
+              </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0" style="background: var(--badge-pending-bg); color: var(--badge-pending-text);">67%</span>
+          </div>
+          
+          <div class="flex items-center gap-3 md:gap-4 p-4 bg-[var(--surface)] rounded-xl border border-[var(--border)] transition-all duration-300 hover:translate-x-1 hover:shadow-md group">
+            <div class="w-[50px] h-[50px] rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 text-2xl shrink-0 group-hover:scale-105 transition-transform"><iconify-icon icon="solar:bag-linear"></iconify-icon></div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold tracking-tight text-[var(--text)] truncate">Sports Kit Bag</div>
+              <div class="text-xs text-[var(--text-3)] mt-1 truncate">Found at Sports Complex · Amit K.</div>
+              <div class="h-1.5 rounded-full mt-2 bg-[var(--border)] overflow-hidden">
+                <div class="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400 w-[31%] transition-all duration-1000"></div>
+              </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg shrink-0" style="background: var(--badge-lost-bg); color: var(--badge-lost-text);">31%</span>
+          </div>
+        </div>
+        
+        <div class="mt-5 p-3.5 bg-[var(--bg)] rounded-xl text-xs text-[var(--text-2)] text-center border border-[var(--border)]">
+          Powered by <strong class="bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent font-semibold">Google Gemini AI</strong> · Updated in real-time
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        /* PRELOADER */
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('preloader');
-            loader.classList.add('opacity-0', 'invisible');
-            setTimeout(() => loader.remove(), 700);
-        });
+<!-- COLLEGES -->
+<section id="colleges" class="py-[100px] px-6 md:px-[5%] relative">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center reveal max-w-2xl mx-auto">
+      <div class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-[var(--gold)] mb-4">
+        <span class="w-6 h-0.5 bg-[var(--gold)] rounded-full"></span> Open to all
+      </div>
+      <h2 class="font-['Playfair_Display',serif] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight tracking-tight mb-6">
+        Works with any <em class="not-italic bg-gradient-to-br from-[var(--em-color-1)] to-[var(--em-color-2)] bg-clip-text text-transparent">Indian college</em> domain.
+      </h2>
+      <p class="text-base text-[var(--text-2)] leading-relaxed">
+        Any student with an official institutional email — <code class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.ac.in</code>, <code class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.edu.in</code>, or <code class="bg-[var(--surface)] border border-[var(--border)] px-2 py-1 rounded-md text-sm font-semibold text-[var(--text)]">*.edu</code> — can sign up instantly.
+      </p>
+    </div>
+    
+    <div class="flex flex-wrap justify-center gap-3.5 mt-12 reveal">
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @nmims.edu
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @nmims.in
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @iitb.ac.in
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @iitd.ac.in
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @bits-pilani.ac.in
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @vit.ac.in
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @manipal.edu
+      </div>
+      <div class="bg-[var(--glass)] backdrop-blur-md border border-[var(--glass-border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-2)] flex items-center gap-2.5 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:shadow-[0_8px_25px_var(--shadow)] cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] shrink-0"></span> @christ.edu
+      </div>
+      <div class="border-2 border-dashed border-[var(--border)] rounded-xl px-5 py-3 text-sm font-medium text-[var(--text-3)] flex items-center gap-2 transition-all duration-300 hover:border-[var(--gold)] hover:text-[var(--gold)] hover:-translate-y-1 hover:bg-[var(--surface)] cursor-pointer" onclick="alert('Your college can be added by the admin!')">
+        + Your College
+      </div>
+    </div>
+  </div>
+</section>
 
-        /* THEME TOGGLE */
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            document.getElementById('themeBtn').innerHTML = isDark
-                ? '<iconify-icon icon="solar:sun-linear" stroke-width="1.5"></iconify-icon>'
-                : '<iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>';
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+<!-- CTA -->
+<section class="relative py-[120px] px-6 md:px-[5%] bg-gradient-to-br from-[var(--navy-dark)] via-[var(--navy)] to-[var(--navy-light)] [.dark_&amp;]:from-[#0d1b3e] [.dark_&amp;]:via-[#1a3a7a] [.dark_&amp;]:to-[#2563eb] overflow-hidden">
+  <div class="absolute inset-0 opacity-50" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+  
+  <div class="relative z-10 max-w-[800px] mx-auto text-center reveal">
+    <div class="flex items-center justify-center gap-2 text-xs font-semibold tracking-widest uppercase text-white/60 mb-6">
+      Ready to find your stuff?
+    </div>
+    <h2 class="font-['Playfair_Display',serif] text-[clamp(2.5rem,5vw,4rem)] font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+      Lost something today?<br>Sign up in 30 seconds.
+    </h2>
+    <p class="text-base md:text-lg text-white/80 max-w-[540px] mx-auto mb-10 leading-relaxed">
+      Use your college email to get started. No apps to download, no complicated setup — just sign in and start searching.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="index.html?mode=register" class="bg-[var(--gold)] text-[#1a1a1a] px-8 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover:bg-[var(--gold-light)] hover:shadow-[0_15px_40px_rgba(232,160,32,0.4)] hover:-translate-y-1 w-full sm:w-auto flex justify-center items-center gap-2">
+        <iconify-icon icon="solar:diploma-linear" stroke-width="1.5" class="text-xl"></iconify-icon> Sign up with College Email
+      </a>
+      <a href="index.html?mode=login" class="border-2 border-white/30 text-white px-8 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover:border-white hover:bg-white/10 hover:-translate-y-1 w-full sm:w-auto text-center">
+        Already have an account? Login
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-[var(--surface)] border-t border-[var(--border)] py-10 px-6 md:px-[5%]">
+  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="font-['Playfair_Display',serif] text-2xl font-extrabold text-[var(--gold)] tracking-tighter">
+      Back<span class="text-[var(--text-2)]">2U</span>
+    </div>
+    <div class="text-sm text-[var(--text-3)] text-center md:text-left">
+      Built for NMIMS · Powered by Gemini AI
+    </div>
+    <div class="flex gap-6">
+      <a href="index.html" class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
+        Login
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="#how" class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
+        How it works
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="#features" class="text-sm text-[var(--text-3)] font-medium hover:text-[var(--gold)] transition-colors relative group py-1">
+        Features
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--gold)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* PRELOADER */
+window.addEventListener('load', () => {
+    const loader = document.getElementById('preloader');
+    loader.classList.add('opacity-0', 'invisible');
+    setTimeout(() => loader.remove(), 700);
+});
+
+/* THEME TOGGLE */
+function toggleTheme() {
+    const html = document.documentElement;
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    document.getElementById('themeBtn').innerHTML = isDark 
+      ? '<iconify-icon icon="solar:sun-linear" stroke-width="1.5"></iconify-icon>' 
+      : '<iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+(function(){
+    const s = localStorage.getItem('theme') || 'light';
+    if(s === 'dark') document.documentElement.classList.add('dark');
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('themeBtn').innerHTML = s === 'dark' 
+          ? '<iconify-icon icon="solar:sun-linear" stroke-width="1.5"></iconify-icon>' 
+          : '<iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>';
+    });
+})();
+
+/* NAVBAR SCROLL */
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if(window.scrollY > 50) {
+        nav.classList.add('bg-[var(--glass)]', 'backdrop-blur-xl', 'border-b', 'border-[var(--glass-border)]', 'shadow-sm');
+        nav.classList.remove('bg-transparent');
+    } else {
+        nav.classList.remove('bg-[var(--glass)]', 'backdrop-blur-xl', 'border-b', 'border-[var(--glass-border)]', 'shadow-sm');
+        nav.classList.add('bg-transparent');
+    }
+});
+
+/* SCROLL REVEAL */
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if(e.isIntersecting) {
+            e.target.classList.add('visible');
         }
-        (function () {
-            const s = localStorage.getItem('theme') || 'light';
-            if (s === 'dark') document.documentElement.classList.add('dark');
-            window.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('themeBtn').innerHTML = s === 'dark'
-                    ? '<iconify-icon icon="solar:sun-linear" stroke-width="1.5"></iconify-icon>'
-                    : '<iconify-icon icon="solar:moon-linear" stroke-width="1.5"></iconify-icon>';
-            });
-        })();
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        /* NAVBAR SCROLL */
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('bg-[var(--glass)]', 'backdrop-blur-xl', 'border-b', 'border-[var(--glass-border)]', 'shadow-sm');
-                nav.classList.remove('bg-transparent');
-            } else {
-                nav.classList.remove('bg-[var(--glass)]', 'backdrop-blur-xl', 'border-b', 'border-[var(--glass-border)]', 'shadow-sm');
-                nav.classList.add('bg-transparent');
-            }
-        });
+/* SMOOTH ANCHOR SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+</script>
 
-        /* SCROLL REVEAL */
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        /* SMOOTH ANCHOR SCROLL */
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-
-</body>
-
-</html>
+</body></html>
