@@ -101,7 +101,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER,    ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_TIMEOUT,       30);
 $response  = curl_exec($ch);
 $curlError = curl_error($ch);
-curl_close($ch);
+unset($ch);
 
 if ($curlError) {
     echo json_encode(['error' => 'API request failed: ' . $curlError]);
